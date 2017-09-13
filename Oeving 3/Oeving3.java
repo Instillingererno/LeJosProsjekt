@@ -34,6 +34,8 @@ import lejos.hardware.Button;
 public class Oeving3 {
 	public static void main(String[] args) throws Exception{
 
+		int test = 0;
+
 		boolean sluttenAvTunellen = false;
 		boolean erDetNoenBiler = false;
 		final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
@@ -98,12 +100,13 @@ public class Oeving3 {
 			lcd.drawString("Kommet til slutten av tunellen!", 0,1);
 			Motor.B.stop(true);
 			Motor.C.stop(true);
-			if(Button.readButtons() == ){
+
+			test = Button.readButtons();
+
+			if(Integer.toString(test).contains("2")){
 				break;
 			}
-
 		}
 	fargesensor.close();
 	}
-
 }
