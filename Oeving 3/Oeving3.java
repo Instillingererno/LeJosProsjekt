@@ -68,12 +68,19 @@ public class Oeving3 {
 		float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
 
 		while (true){
+
+			test = Button.readButtons();
+
+			if(Integer.toString(test).contains("2")){
+				break;
+			}
+
 			sluttenAvTunellen = false;
 			erDetNoenBiler = false;
 
 			while(!sluttenAvTunellen){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
 			LCD.clear();
-			lcd.drawString("Kjoerer...", 0,1);
+			lcd.drawString("     Kjoerer...", 0,1);
 			lcd.drawString(Integer.toString(test), 0,1);
 
 
