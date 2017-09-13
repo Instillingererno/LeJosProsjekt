@@ -15,32 +15,19 @@ import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 import lejos.hardware.sensor.*;
 import lejos.hardware.Device;
-import java.io.Closeable;
 import lejos.hardware.Button;
-
-
-/* Pseudo kode
-
-	Import lejos hardware
-
-	Intitiate sensors and motors
-
-	Kjoer rett frem med mindre: En bil kommer (Lydsensor aktiveres)
-
-	Stopp hvis man kommer til slutten av tunellen til teipen (Hvis fargesensor aktiveres)
-
-*/
 
 public class Oeving3 {
 	public static void main(String[] args) throws Exception{
 
-		int test = 0;
-		int nedteller = 0;
-		boolean serBilenEndenAvTunellen = false;
+		int knappVerdi = 0;
+		int nedteller = 0;							// Brukes til å telle ned hvor ofte bilen kan forandre kjøreretning.
+		final int hvorOfteKanBilenSnu = 300;		// Bilen kan snu hver 300ede gang while loopen kjører.
+		boolean skalBilenRygge = false;
 		boolean rygger = false;
-		final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
-		final double lydTerskel = 0.9; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
-		final double fargeTerskel = 0.01;	// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final long stoppeVarighet = 3000;			// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
+		final double lydTerskel = 0.9; 				// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
+		final double fargeTerskel = 0.01;			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighet = 200;
 		final int vaskeMotorHastighet = 900;
 
@@ -68,57 +55,47 @@ public class Oeving3 {
 		SampleProvider lydLeser = lydsensor.getDBAMode();  //
 		float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
 
-		while (true){
-			while(true){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
-				LCD.clear();
-				lcd.drawString("Kjoerer...", 0,1);
+		while(true){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
+			LCD.clear();
+			lcd.drawString("Kjoerer...", 0,1);
 
-				fargeLeser.fetchSample(fargeSample, 0);
-				lydLeser.fetchSample(lydSample, 0);
+			fargeLeser.fetchSample(fargeSample, 0);
+			lydLeser.fetchSample(lydSample, 0);
 
-				if(nedteller <= 0){
-					if(fargeSample[0] < fargeTerskel){
-						if(serBilenEndenAvTunellen){
-							serBilenEndenAvTunellen = false;
-						} else {
-							serBilenEndenAvTunellen = true;
-						}
-						nedteller = 300;
-						break;
+			if(nedteller <= 0){
+				if(fargeSample[0] < fargeTerskel){
+					if(skalBilenRygge){
+						skalBilenRygge = false;
+					} else {
+						skalBilenRygge = true;
 					}
+					nedteller = hvorOfteKanBilenSnu;
 				}
-				nedteller--;
-				lcd.drawString(Integer.toString(nedteller), 0,2);
+			}
+			nedteller--;
 
-				if(lydSample[0] > lydTerskel){
-					Motor.B.stop(true);
-					Motor.C.stop(true);
-					Motor.A.stop(true);
-					Thread.sleep(stoppeVarighet);
-				}
-
-				if(serBilenEndenAvTunellen){
-					Motor.B.backward();
-					Motor.C.backward();
-				} else {
-					Motor.B.forward();
-					Motor.C.forward();
-				}
-					Motor.A.forward();
-
-				test = Button.readButtons();
-				if(Integer.toString(test).contains("2")){
-					break;
-				}
-
+			if(lydSample[0] > lydTerskel){
+				Motor.B.stop(true);
+				Motor.C.stop(true);
+				Motor.A.stop(true);
+				Thread.sleep(stoppeVarighet);
 			}
 
-			test = Button.readButtons();
-			if(Integer.toString(test).contains("2")){
+			if(skalBilenRygge){
+				Motor.B.backward();
+				Motor.C.backward();
+			} else {
+				Motor.B.forward();
+				Motor.C.forward();
+			}
+			Motor.A.forward();
+
+			knappVerdi = Button.readButtons();
+			if(Integer.toString(knappVerdi).contains("2")){
 				break;
 			}
 		}
-	fargesensor.close();
-	lydsensor.close();
+	fargesensor.close();	//Må inkluderes så sensorporter lukkes etter hver programkjøring.
+	lydsensor.close();		//
 	}
 }
