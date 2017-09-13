@@ -39,10 +39,10 @@ public class Oeving3 {
 		boolean sluttenAvTunellen = false;
 		boolean erDetNoenBiler = false;
 		final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
-		final double lydTerskel = 0.6; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
+		final double lydTerskel = 0.8; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
 		final double fargeTerskel = 0.01;	// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorBHastighet = 200;
-		final int motorCHastighet = 200;
+		final int motorHastighet = 200;
+		final int vaskeMotorHastighet = 900;
 
 		Brick brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1"); 		// Fargesensor
@@ -54,8 +54,9 @@ public class Oeving3 {
 		Keys keys = ev3.getKeys();
 
 
-		Motor.B.setSpeed(motorBHastighet);
-		Motor.C.setSpeed(-motorCHastighet);
+		Motor.B.setSpeed(motorHastighet);
+		Motor.C.setSpeed(-motorHastighet);
+		Motor.A.setSpeed(vaskeMotorHastighet);
 
 		/* Definerer en fargesensor og fargeAvleser */
 		EV3ColorSensor fargesensor = new EV3ColorSensor(s1); // ev3-fargesensor
@@ -72,10 +73,8 @@ public class Oeving3 {
 			erDetNoenBiler = false;
 
 			while(!sluttenAvTunellen){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
-			LCD.clear();
-			lcd.drawString("Kjoerer...", 0,1);
-			lcd.drawString(Integer.toString(test), 0,1);
-
+				LCD.clear();
+				lcd.drawString("Kjoerer...", 0,1);
 
 				fargeLeser.fetchSample(fargeSample, 0);
 				lydLeser.fetchSample(lydSample, 0);
@@ -89,26 +88,35 @@ public class Oeving3 {
 					erDetNoenBiler = true;
 					Motor.B.stop(true);
 					Motor.C.stop(true);
+					Motor.A.stop(true);
 					Thread.sleep(stoppeVarighet);
 				}
 
 				Motor.B.forward();  // Start motor A - kjoer framover
 				Motor.C.forward();  // Start motor C - kjoer framover
-				Thread.sleep(200);
+				Motor.A.forward();
+
+				test = Button.readButtons();
+				if(Integer.toString(test).contains("2")){
+					break;
+				}
+
 			}
 
+			test = Button.readButtons();
+			if(Integer.toString(test).contains("2")){
+				break;
+			}
 
 			LCD.clear();
 			lcd.drawString("Kommet til slutten av tunellen!", 0,1);
 			Motor.B.stop(true);
 			Motor.C.stop(true);
-
-			test = Button.readButtons();
-
-			if(Integer.toString(test).contains("2")){
-				break;
-			}
+			Motor.A.stop(true);
+			sluttenAvTunellen = false;
+			keys.waitForAnyPress();
 		}
 	fargesensor.close();
+	lydsensor.close();
 	}
 }
