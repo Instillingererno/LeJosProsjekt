@@ -1,5 +1,5 @@
 /*	Bilen skal vaske en tunell og stoppe midlertidig hvis en bil kommer,
-	og stoppe helt om den når slutten av tunellen.	*/
+	og stoppe helt om den naar slutten av tunellen.	*/
 
 import lejos.hardware.motor.*;
 import lejos.hardware.lcd.*;
@@ -22,7 +22,7 @@ import lejos.hardware.sensor.*;
 
 	Intitiate sensors and motors
 
-	Kjør rett frem med mindre: En bil kommer (Lydsensor aktiveres)
+	Kjoer rett frem med mindre: En bil kommer (Lydsensor aktiveres)
 
 	Stopp hvis man kommer til slutten av tunellen til teipen (Hvis fargesensor aktiveres)
 
@@ -33,11 +33,10 @@ public static void main(String[] args) throws Exception{
 
 	boolean sluttenAvTunellen = false;
 	boolean erDetNoenBiler = false;
-	final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe når den møter en bil. (Oppgis i ms)
-	final double lydTerskel = 0.6; 		// Hvor høy lyd må noe lage for at det skal gjenkjennes som en bil.
-	final double fargeTerskel = 0.0;	// Hvor lav RGB verdi må bakken være for at det skal gjenkjennes som svart.
-	final int motorBHastighet = 200;
-	final int motorCHastighet = 200;
+	final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
+	final double lydTerskel = 0.6; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
+	double fargeTerskel = 0.0;	// Hvor lav RGB verdi maa bakken voere for at det skal gjenkjennes som svart.
+	final int motorHastighet = 200;
 
 	Brick brick = BrickFinder.getDefault();
 	Port s1 = brick.getPort("S1"); 		// Fargesensor
@@ -48,13 +47,8 @@ public static void main(String[] args) throws Exception{
 	TextLCD lcd = ev3.getTextLCD();
 	Keys keys = ev3.getKeys();
 
-	lcd.drawString("Trykk for starte", 0, 1);
-	keys.waitForAnyPress();
-	LCD.clear();
-
-
-	Motor.B.setSpeed(motorBHastighet);
-	Motor.C.setSpeed(-motorCHastighet);
+	Motor.B.setSpeed(-motorHastighet);
+	Motor.C.setSpeed(motorHastighet);
 
 	/* Definerer en fargesensor og fargeAvleser */
 	EV3ColorSensor fargesensor = new EV3ColorSensor(s1); // ev3-fargesensor
@@ -67,11 +61,23 @@ public static void main(String[] args) throws Exception{
     float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
 
 
-	//Kode for å definere fargeTerskel (Fargesensor må se på det som defineres som svart, når denne koden kjøres)
+	//Kode for aa definere fargeTerskel (Fargesensor maa se paa det som defineres som svart, naar denne koden kjoeres)
+	fargeLeser.fetchSample(fargeSample, 0);
+
+	lcd.drawString("Foer vasking maa fargesensor", 0,1);
+	lcd.drawString("plasseres paa sort linje", 0,2);
+	lcd.drawString("saa svart kan defineres", 0,3);
+	lcd.drawString("trykk paa en knapp for aa", 0,4);
+	lcd.drawString("starte kalibrering.", 0,5);
+	keys.waitForAnyPress();
+	LCD.clear();
+	fargeTerskel = fargeSample[0];
+	lcd.drawString("Kalibrering ferdig!", 0,1);
+	lcd.drawString("Trykk en knapp for aa starte vasking.", 0,2);
+	keys.waitForAnyPress();
 
 
-
-
+	// Kode som kjoerer under drift
 		while (true){
 			sluttenAvTunellen = false;
 			erDetNoenBiler = false;
@@ -95,13 +101,15 @@ public static void main(String[] args) throws Exception{
 					Thread.sleep(stoppeVarighet);
 				}
 
-				Motor.B.forward();  // Start motor A - kjør framover
-				Motor.C.forward();  // Start motor C - kjør framover
+				Motor.B.forward();  // Start motor A - kjoer framover
+				Motor.C.forward();  // Start motor C - kjoer framover
 				Thread.sleep(200);
 			}
 
 			LCD.clear();
 			lcd.drawString("Kommet til slutten av tunellen!", 0,1);
+			lcd.drawString("Trykk en knapp for aa gjenoppta vasking", 0,2);
+
 			Motor.B.stop(true);
 			Motor.C.stop(true);
 			keys.waitForAnyPress();
