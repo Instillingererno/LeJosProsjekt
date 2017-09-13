@@ -40,7 +40,7 @@ public class Oeving3 {
 		boolean erDetNoenBiler = false;
 		final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
 		final double lydTerskel = 0.6; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
-		final double fargeTerskel = 0.0;	// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskel = 0.01;	// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorBHastighet = 200;
 		final int motorCHastighet = 200;
 
@@ -74,6 +74,8 @@ public class Oeving3 {
 			while(!sluttenAvTunellen){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
 			LCD.clear();
 			lcd.drawString("Kjoerer...", 0,1);
+			lcd.drawString(Integer.toString(test), 0,1);
+
 
 				fargeLeser.fetchSample(fargeSample, 0);
 				lydLeser.fetchSample(lydSample, 0);
