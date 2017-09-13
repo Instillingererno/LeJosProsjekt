@@ -35,11 +35,9 @@ public static void main(String[] args) throws Exception{
 	boolean erDetNoenBiler = false;
 	final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe når den møter en bil. (Oppgis i ms)
 	final double lydTerskel = 0.6; 		// Hvor høy lyd må noe lage for at det skal gjenkjennes som en bil.
-	final double fargeTerskel = 0.03;	// Hvor lav RGB verdi må bakken være for at det skal gjenkjennes som svart.
+	final double fargeTerskel = 0.0;	// Hvor lav RGB verdi må bakken være for at det skal gjenkjennes som svart.
 	final int motorBHastighet = 200;
 	final int motorCHastighet = 200;
-
-
 
 	Brick brick = BrickFinder.getDefault();
 	Port s1 = brick.getPort("S1"); 		// Fargesensor
@@ -67,6 +65,11 @@ public static void main(String[] args) throws Exception{
 	NXTSoundSensor lydsensor = new NXTSoundSensor(s2); // NXT-lydsensor
 	SampleProvider lydLeser = lydsensor.getDBAMode();  //
     float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
+
+
+	//Kode for å definere fargeTerskel (Fargesensor må se på det som defineres som svart, når denne koden kjøres)
+
+
 
 
 		while (true){
