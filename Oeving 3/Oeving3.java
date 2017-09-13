@@ -35,14 +35,15 @@ public class Oeving3 {
 	public static void main(String[] args) throws Exception{
 
 		int test = 0;
-
-		boolean sluttenAvTunellen = false;
-		boolean erDetNoenBiler = false;
+		int nedteller = 0;
+		boolean serBilenEndenAvTunellen = false;
+		boolean rygger = false;
 		final long stoppeVarighet = 3000;	// Hvor lenge skal bilen stoppe naar den moeter en bil. (Oppgis i ms)
-		final double lydTerskel = 0.8; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
+		final double lydTerskel = 0.9; 		// Hvor hoey lyd maa noe lage for at det skal gjenkjennes som en bil.
 		final double fargeTerskel = 0.01;	// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighet = 200;
 		final int vaskeMotorHastighet = 900;
+
 
 		Brick brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1"); 		// Fargesensor
@@ -52,7 +53,6 @@ public class Oeving3 {
 		EV3 ev3 = (EV3) BrickFinder.getLocal();
 		TextLCD lcd = ev3.getTextLCD();
 		Keys keys = ev3.getKeys();
-
 
 		Motor.B.setSpeed(motorHastighet);
 		Motor.C.setSpeed(-motorHastighet);
@@ -69,32 +69,42 @@ public class Oeving3 {
 		float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
 
 		while (true){
-			sluttenAvTunellen = false;
-			erDetNoenBiler = false;
-
-			while(!sluttenAvTunellen){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
+			while(true){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
 				LCD.clear();
 				lcd.drawString("Kjoerer...", 0,1);
 
 				fargeLeser.fetchSample(fargeSample, 0);
 				lydLeser.fetchSample(lydSample, 0);
 
-				if(fargeSample[0] < fargeTerskel){
-					sluttenAvTunellen = true;
-					break;
+				if(nedteller <= 0){
+					if(fargeSample[0] < fargeTerskel){
+						if(serBilenEndenAvTunellen){
+							serBilenEndenAvTunellen = false;
+						} else {
+							serBilenEndenAvTunellen = true;
+						}
+						nedteller = 300;
+						break;
+					}
 				}
+				nedteller--;
+				lcd.drawString(Integer.toString(nedteller), 0,2);
 
 				if(lydSample[0] > lydTerskel){
-					erDetNoenBiler = true;
 					Motor.B.stop(true);
 					Motor.C.stop(true);
 					Motor.A.stop(true);
 					Thread.sleep(stoppeVarighet);
 				}
 
-				Motor.B.forward();  // Start motor A - kjoer framover
-				Motor.C.forward();  // Start motor C - kjoer framover
-				Motor.A.forward();
+				if(serBilenEndenAvTunellen){
+					Motor.B.backward();
+					Motor.C.backward();
+				} else {
+					Motor.B.forward();
+					Motor.C.forward();
+				}
+					Motor.A.forward();
 
 				test = Button.readButtons();
 				if(Integer.toString(test).contains("2")){
@@ -107,14 +117,6 @@ public class Oeving3 {
 			if(Integer.toString(test).contains("2")){
 				break;
 			}
-
-			LCD.clear();
-			lcd.drawString("Kommet til slutten av tunellen!", 0,1);
-			Motor.B.stop(true);
-			Motor.C.stop(true);
-			Motor.A.stop(true);
-			sluttenAvTunellen = false;
-			keys.waitForAnyPress();
 		}
 	fargesensor.close();
 	lydsensor.close();
