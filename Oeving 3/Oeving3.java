@@ -1,22 +1,21 @@
 /*	Bilen skal vaske en tunell og stoppe midlertidig hvis en bil kommer,
 	og stoppe helt om den naar slutten av tunellen.	*/
 
-import lejos.hardware.motor.*;
-import lejos.hardware.lcd.*;
-import lejos.hardware.sensor.NXTLightSensor;
-import lejos.hardware.sensor.NXTColorSensor;
-import lejos.hardware.sensor.NXTSoundSensor;
-import lejos.hardware.port.Port;
-import lejos.hardware.Brick;
-import lejos.hardware.BrickFinder;
-import lejos.hardware.ev3.EV3;
-import lejos.hardware.Keys;
-import lejos.hardware.sensor.SensorModes;
-import lejos.robotics.SampleProvider;
-import lejos.hardware.sensor.*;
-import lejos.hardware.Device;
-import lejos.hardware.Button;
-
+import lejos.hardware.motor.*;					// Må inkluderes så motor kan styres
+import lejos.hardware.lcd.*;					// Må inkluderes så lcd kan styres
+import lejos.hardware.sensor.NXTColorSensor;	// Må inkluderes så fargesensor kan styres
+import lejos.hardware.sensor.NXTSoundSensor;	// Må inkluderes så lydsensor kan styres
+import lejos.hardware.port.Port;			   	// Må inkluderes så porter kan styres
+import lejos.hardware.Brick;					// Må inkluderes så EV3-klossen kan styres
+import lejos.hardware.BrickFinder;				// Må inkluderes så EV3-klossen kan ses
+import lejos.hardware.ev3.EV3;					// Må inkluderes så EV3-biblioteket kan brukes
+import lejos.hardware.Keys;						// Må inkluderes så programmet kan lese input fra knappene på EV3 klossen
+import lejos.hardware.sensor.SensorModes;		// Gir tilgang til forskjellige moduser sensorene kan ha
+import lejos.robotics.SampleProvider;			// Må inkluderes for å kunne hente informasjon fra sensorene
+import lejos.hardware.sensor.*;					// Må inkluderes så sensorer kan brukes
+import lejos.hardware.Device;					// Må inkluderes så programmet kan referere til EV3-klossen
+import lejos.hardware.Button;					// Må inkluderes så EV3-biblioteket kan brukes
+												// Klassene må inkluderes så programmet kan ta bruk av metoder i klassene.
 public class Oeving3 {
 	public static void main(String[] args) throws Exception{
 
@@ -33,8 +32,8 @@ public class Oeving3 {
 
 
 		Brick brick = BrickFinder.getDefault();
-		Port s1 = brick.getPort("S1"); 		// Fargesensor
-		Port s2 = brick.getPort("S2"); 		// Lydsensor
+		Port s1 = brick.getPort("S1"); 				// Fargesensor
+		Port s2 = brick.getPort("S2"); 				// Lydsensor
 
 
 		EV3 ev3 = (EV3) BrickFinder.getLocal();
@@ -46,16 +45,16 @@ public class Oeving3 {
 		Motor.A.setSpeed(vaskeMotorHastighet);
 
 		/* Definerer en fargesensor og fargeAvleser */
-		EV3ColorSensor fargesensor = new EV3ColorSensor(s1); // ev3-fargesensor
-		SampleProvider fargeLeser = fargesensor.getMode("RGB");  // svart = 0.01..
-		float[] fargeSample = new float[fargeLeser.sampleSize()]; // tabell som inneholder avlest verdi
+		EV3ColorSensor fargesensor = new EV3ColorSensor(s1);	 	// ev3-fargesensor
+		SampleProvider fargeLeser = fargesensor.getMode("RGB");  	//
+		float[] fargeSample = new float[fargeLeser.sampleSize()];	//
 
 		/* Definerer en lydsensor og lydAvleser */
-		NXTSoundSensor lydsensor = new NXTSoundSensor(s2); // NXT-lydsensor
-		SampleProvider lydLeser = lydsensor.getDBAMode();  //
-		float[] lydSample = new float[lydLeser.sampleSize()]; // tabell som inneholder avlest verdi
+		NXTSoundSensor lydsensor = new NXTSoundSensor(s2); 			// NXT-lydsensor
+		SampleProvider lydLeser = lydsensor.getDBAMode(); 			//
+		float[] lydSample = new float[lydLeser.sampleSize()]; 		//
 
-		while(true){ // Hvis bilen ikke er i slutten av tunellen, og det ikke er noen andre biler.
+		while(true){
 			LCD.clear();
 			lcd.drawString("Kjoerer...", 0,1);
 
@@ -90,10 +89,10 @@ public class Oeving3 {
 			}
 			Motor.A.forward();
 
-			knappVerdi = Button.readButtons();
-			if(Integer.toString(knappVerdi).contains("2")){
-				break;
-			}
+			knappVerdi = Button.readButtons();				//
+			if(Integer.toString(knappVerdi).contains("2")){	//
+				break;										//
+			}												//Må inkluderes så kompileren ser at koden under kan kjøres.
 		}
 	fargesensor.close();	//Må inkluderes så sensorporter lukkes etter hver programkjøring.
 	lydsensor.close();		//
