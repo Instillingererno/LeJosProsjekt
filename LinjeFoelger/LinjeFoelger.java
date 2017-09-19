@@ -1,52 +1,44 @@
-/*	Bilen skal følge en linje, må optimaliseres så den følger linjen så fort som mulig  */
+/*	Bilen skal foelge en linje, maa optimaliseres saa den foelger linjen saa fort som mulig  */
 
-import lejos.hardware.motor.*;					// Må inkluderes så motor kan styres
-import lejos.hardware.lcd.*;					// Må inkluderes så lcd kan styres
-import lejos.hardware.sensor.NXTColorSensor;	// Må inkluderes så fargesensor kan styres
-//import lejos.hardware.sensor.NXTSoundSensor;	// Må inkluderes så lydsensor kan styres
-import lejos.hardware.port.Port;			   	// Må inkluderes så porter kan styres
-import lejos.hardware.Brick;					// Må inkluderes så EV3-klossen kan styres
-import lejos.hardware.BrickFinder;				// Må inkluderes så EV3-klossen kan ses
-import lejos.hardware.ev3.EV3;					// Må inkluderes så EV3-biblioteket kan brukes
-//import lejos.hardware.Keys;					// Må inkluderes så programmet kan lese input fra knappene på EV3 klossen
+import lejos.hardware.motor.*;					// Maa inkluderes saa motor kan styres
+import lejos.hardware.lcd.*;					// Maa inkluderes saa lcd kan styres
+import lejos.hardware.sensor.NXTColorSensor;	// Maa inkluderes saa fargesensor kan styres
+//import lejos.hardware.sensor.NXTSoundSensor;	// Maa inkluderes saa lydsensor kan styres
+import lejos.hardware.port.Port;			   	// Maa inkluderes saa porter kan styres
+import lejos.hardware.Brick;					// Maa inkluderes saa EV3-klossen kan styres
+import lejos.hardware.BrickFinder;				// Maa inkluderes saa EV3-klossen kan ses
+import lejos.hardware.ev3.EV3;					// Maa inkluderes saa EV3-biblioteket kan brukes
+import lejos.hardware.Keys;						// Maa inkluderes saa programmet kan lese input fra knappene paa EV3 klossen
 import lejos.hardware.sensor.SensorModes;		// Gir tilgang til forskjellige moduser sensorene kan ha
-import lejos.robotics.SampleProvider;			// Må inkluderes for å kunne hente informasjon fra sensorene
-import lejos.hardware.sensor.*;					// Må inkluderes så sensorer kan brukes
-import lejos.hardware.Device;					// Må inkluderes så programmet kan referere til EV3-klossen
-//import lejos.hardware.Button;					// Må inkluderes så EV3-biblioteket kan brukes
-import javax.swing.Timer;						// Må inkluderes så man kan lage en timer og ta tid på noe
-												// Klassene må inkluderes så programmet kan ta bruk av metoder i klassene
+import lejos.robotics.SampleProvider;			// Maa inkluderes for aa kunne hente informasjon fra sensorene
+import lejos.hardware.sensor.*;					// Maa inkluderes saa sensorer kan brukes
+import lejos.hardware.Device;					// Maa inkluderes saa programmet kan referere til EV3-klossen
+import lejos.hardware.Button;					// Maa inkluderes saa EV3-biblioteket kan brukes
+import javax.swing.Timer;						// Maa inkluderes saa man kan lage en timer og ta tid paa noe
+												// Klassene maa inkluderes saa programmet kan ta bruk av metoder i klassene
 
 /*
-		Må gjøres
+		Maa gjoeres
 
-	Spørre om banen svinger mot høyre eller venstre før start, gjøres for å bestemme hvilke vei sweng metoden skal svinge 90 grader før den "sweeper"
-	Gjøres ved at man ber brukeren, trykke på pilknapp i retning av hvordan banen svinger.
+	Spoerre om banen svinger mot hoeyre eller venstre foer start, gjoeres for aa bestemme hvilke vei sweng metoden skal svinge 90 grader foer den "sweeper"
+	Gjoeres ved at man ber brukeren, trykke paa pilknapp i retning av hvordan banen svinger.
 
-		Kan gjøres
+		Kan gjoeres
 
-	Lage en sprint metode, som gjør at bilen kan kjøre ekstra fort der vi vet at det er rette strekninger.
-	Gjøres ved å definere en variabel som
+	Lage en sprint metode, som gjoer at bilen kan kjoere ekstra fort der vi vet at det er rette strekninger.
+	Gjoeres ved aa definere en variabel som
 
-	Legge til en "kurv" med forskjellige svarte legodeler bak bilen, kurven roterer via en motor og slipper ut alt innholdet på banen tidlig i racet. (Styrealgoritmen er immun mot svarte hindringer, men ikke hvit!)
+	Legge til en "kurv" med forskjellige svarte legodeler bak bilen, kurven roterer via en motor og slipper ut alt innholdet paa banen tidlig i racet. (Styrealgoritmen er immun mot svarte hindringer, men ikke hvit!)
 
-	En "panikk" metode som aktiveres hvis svart ikke har blitt sett av noen av sensorene på en stund, stopper bilen, snur den 90 grader og gjør at den beveger seg frem og tilbake til S1 ser den svarte teipen.
+	En "panikk" metode som aktiveres hvis svart ikke har blitt sett av noen av sensorene paa en stund, stopper bilen, snur den 90 grader og gjoer at den beveger seg frem og tilbake til S1 ser den svarte teipen.
 
 
 */
 
 public class LinjeFoelger {
 
-		// Klassevariabler
-		final double fargeTerskelS1 = 1;			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS2 = 1; 			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighet = 400;
-		final int rotasjonsHastighetSwing = 100;
-		final int motorHastighetRevers = 200;
-		final int rotasjonsHastighetSwing = 50;
 
-		boolean høyreEllerVenstre = 0;				//Om = 1, går banen rundt til venstre, ellers høyre (Spørs hvilken vei i banen man kjører)
-		// Klassevariabler
+
 
 
 	public static void main(String[] args) throws Exception{
@@ -54,9 +46,6 @@ public class LinjeFoelger {
 		Brick brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1"); 				// Fargesensor1
 		Port s2 = brick.getPort("S2"); 				// Fargesensor2
-
-		Motor.A.setSpeed(motorHastighet);
-		Motor.B.setSpeed(-motorHastighet);
 
 		/* Definerer en fargesensor og fargeAvleser */
 		EV3ColorSensor fargesensorS1 = new EV3ColorSensor(s1);	 		// Fargesensor1
@@ -69,125 +58,53 @@ public class LinjeFoelger {
 		float[] fargeSampleS2 = new float[fargeLeserS2.sampleSize()];	//
 
 
+		// Klassevariabler
+		final double fargeTerskelS1 = 1;			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS2 = 1; 			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final int motorHastighet = 400;
+		final int motorHastighetRevers = 200;
+		final int rotasjonsHastighetSweep = 50;
+		int knappVerdi = 0;
+
+		boolean hoeyreEllerVenstre = false;				//Om = 1, gaar banen rundt til venstre, ellers hoeyre (Spoers hvilken vei i banen man kjoerer)
+
+		Motor.A.setSpeed(motorHastighet);
+		Motor.B.setSpeed(-motorHastighet);
+
+
 		while(true){
 			fargeLeserS1.fetchSample(fargeSampleS1, 0);	// Les av farge
 			fargeLeserS2.fetchSample(fargeSampleS2, 0);	//
 
 			if(verdiTerskelSammenlign(fargeSampleS1[0], true, fargeTerskelS1)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
-				Motor.A.Stop(true);
-				Motor.B.Stop();
+				Motor.A.stop(true);
+				Motor.B.stop();
 
 				//Rygg til  ser svart linje
-				Motor.A.Backward();
-				Motor.B.Backward();
+				Motor.A.backward();
+				Motor.B.backward();
 
 				while(verdiTerskelSammenlign(fargeSampleS1[0], true, fargeTerskelS1)){
 					fargeLeserS1.fetchSample(fargeSampleS1, 0);	// Les av farge
 
 				}
 
-				Motor.A.Stop(true);
-				Motor.B.Stop(true);
+				Motor.A.stop(true);
+				Motor.B.stop(true);
 
 			} else if(verdiTerskelSammenlign(fargeSampleS2[0], true, fargeTerskelS2)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
-				sweep();
-			} else {
-				Motor.A.Forward();
-				Motor.B.Forward();
-			}
-		}
-
-
-	/*
-		Bilen
-
-		2x fargesensor eller 1x fargesensor og 1x lyssensor
-		sSenter	// fargesensor som peker ned på bakken, står mellom hjulene slik at posisjonen til sensoren ikke forandres ved rotasjon.
-		sForan  // farge/lyssensor som peker ned på bakken, står foran bilen og brukes for styring.
-
-
-
-
-	*/
-
-
-
-	/*
-		Pseudo kode
-
-		while(true){  // Kjør så lenge sensorene ser svar, hvis ikke; utfør funksjoner som søker etter svart linje for sensor det gjelder.
-					  // Hvis rett etter kjøring, sSenter ikke ser svart linje, rygg til sSenter kan se svart linje.
-
-			StoppÅKjøre;
-
-			if(erVerdiOverTerskel(sForan)){
-				sweep();	Roter til svart linje sees av sForan
-			}
-
-			if(erVerdiOverTerskel(sSenter)){
-				finnLinje();
-			}
-
-			while(erVerdiUnderTerskel(sForan) && erVerdiUnderTerskel(sSenter)){ // Kjør til en av sensorene ikke ser linjen
-				Kjør;
-			}
-				StoppÅKjøre;
-
-			if(erVerdiOverTerskel(sSenter)){
-				RyggTilLinjeKanSees;
-		 	}
-
-
-		}
-
-
-		funksjon sweep (){
-			while(true){
-				int a;
-				int b;
-				int c;
-
-				Roter 90 grader;
-				Start timer.
-				Beveg sakte mot høyre til linje kan sees og skriv tid inn i int a;
-				Fortsett bevegelse til linjen ikke kan sees og skriv in tid inn i int b;
-				Skriv tiden inn i c som er mellom tid a og b. F.eks og a = 1 og b = 3, er tiden c = 2;
-				Roter tilbake til rotasjonen bilen hadde i tid c;
-				Bekreft at sForan ser svart linje, om ikke, gjenta while loop.
-				Om sForan ser svart linje; break;
-			}
-		}
-
-
-
-
-		funksjon erVerdiUnder/OverTerskel (int verdi, boolean overUnder, int svartTerskelForIndividuellSensor)	//boolean overUnder, Over = true Under = false
-			if(verdi <= svartTerskelForIndividuellSensor)
-				return 1
-			else {
-				return 0
-			}
-		}
-	*/
-
-
-
-
-	fargesensorS1.close();	//Må inkluderes så sensorporter lukkes etter hver programkjøring.
-	fargesensorS2.close();	//
-	}
-
-	public static void sweep(boolean høyreEllerVenstre){		// høyreEllerVenstre = 1, Går banen mot høyre eller venstre i forhold til startposisjon
+			//SWEEP
+			//SWEEP
 		double tidStartAvSvartLinje = 0;
 		double tidSluttAvSvartLinje = 0;
 		double tidMellom = 0;
 		boolean settSvartLinje = false;
 
-		//Roter venstre/høyre 90 grader før neste linje utføres
-		if(høyreEllerVenstre == true){
+		//Roter venstre/hoeyre 90 grader foer neste linje utfoeres
+		if(hoeyreEllerVenstre == true){
 			//Roter 90 grader til venstre
 		} else {
-			//Roter 90 grader til høyre
+			//Roter 90 grader til hoeyre
 		}
 
 		//Sett rotasjon til rotasjonsHastighetSweep
@@ -198,42 +115,42 @@ public class LinjeFoelger {
 		long startTid = System.nanoTime();
 
 
-		if(høyreEllerVenstre == true){
-			//Begynn rotasjon mot høyre
-			Motor.A.Forward();
-			Motor.B.Backward();
+		if(hoeyreEllerVenstre == true){
+			//Begynn rotasjon mot hoeyre
+			Motor.A.forward();
+			Motor.B.backward();
 		} else {
 			//Begynn rotasjon mot venstre
-			Motor.A.Backward();
-			Motor.B.Forward();
+			Motor.A.backward();
+			Motor.B.forward();
 		}
 
-		long a = System.nanoTime - startTid;
+		long a = System.nanoTime() - startTid;
 
-		//tidStartAvSvartLinje = tiden når svart linje sees
+		//tidStartAvSvartLinje = tiden naar svart linje sees
 		while(verdiTerskelSammenlign(fargeSampleS2[0], true, fargeTerskelS2)){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
 			fargeLeserS2.fetchSample(fargeSampleS2, 0);
 		}
 
 
-		//tidSluttAvSvartLinje = tiden når ikke svart linje sees, etter svart linje har blitt sett
-		long b = System.nanoTime - startTid;
+		//tidSluttAvSvartLinje = tiden naar ikke svart linje sees, etter svart linje har blitt sett
+		long b = System.nanoTime() - startTid;
 		//Regn ut tidMellom
 		long c = (b - a) / 2;
-		//Roter sakte tilbake i (Nåverende tid - tidMellom) sekunder
+		//Roter sakte tilbake i (Naaverende tid - tidMellom) sekunder
 
-		b = System.nanotime;
-		if(høyreEllerVenstre == true){
-			while((System.nanotime) < (c + b)){
-				//Begynn rotasjon mot høyre
-				Motor.A.Forward();
-				Motor.B.Backward();
+		b = System.nanoTime();
+		if(hoeyreEllerVenstre == true){
+			while((System.nanoTime()) < (c + b)){
+				//Begynn rotasjon mot hoeyre
+				Motor.A.forward();
+				Motor.B.backward();
 			}
 		} else {
-			while((System.nanotime) < (c + b)){
+			while((System.nanoTime()) < (c + b)){
 				//Begynn rotasjon mot venstre
-				Motor.A.Backward();
-				Motor.B.Forward();
+				Motor.A.backward();
+				Motor.B.forward();
 			}
 		}
 
@@ -242,9 +159,29 @@ public class LinjeFoelger {
 		Motor.A.setSpeed(motorHastighet);
 		Motor.B.setSpeed(-motorHastighet);
 
-			//Om svart linje faktisk ikke sees, pga feil, vil hovedwhileloop gjenta sweep;
+			//SWEEP
+			//SWEEP
 
+			} else {
+				Motor.A.forward();
+				Motor.B.forward();
+			}
+
+			knappVerdi = Button.readButtons();				//
+			if(Integer.toString(knappVerdi).contains("2")){	//
+				break;										//
+			}
+
+		}
+
+
+
+
+	fargesensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
+	fargesensorS2.close();	//
 	}
+
+
 
 	public static boolean verdiTerskelSammenlign(double verdi, boolean overUnder, double terskelSomSkalBrukes){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
 		if(overUnder = true){
