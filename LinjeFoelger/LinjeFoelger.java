@@ -4,6 +4,7 @@ import lejos.hardware.motor.*;					// Maa inkluderes saa motor kan styres
 import lejos.hardware.lcd.*;					// Maa inkluderes saa lcd kan styres
 import lejos.hardware.sensor.NXTColorSensor;	// Maa inkluderes saa fargesensor kan styres
 //import lejos.hardware.sensor.NXTSoundSensor;	// Maa inkluderes saa lydsensor kan styres
+import lejos.hardware.sensor.NXTLightSensor;
 import lejos.hardware.port.Port;			   	// Maa inkluderes saa porter kan styres
 import lejos.hardware.Brick;					// Maa inkluderes saa EV3-klossen kan styres
 import lejos.hardware.BrickFinder;				// Maa inkluderes saa EV3-klossen kan ses
@@ -44,23 +45,23 @@ public class LinjeFoelger {
 	public static void main(String[] args) throws Exception{
 
 		Brick brick = BrickFinder.getDefault();
-		Port s1 = brick.getPort("S1"); 				// Fargesensor1
-		Port s2 = brick.getPort("S2"); 				// Fargesensor2
+		Port s1 = brick.getPort("S1"); 				// LysSensor
+		Port s4 = brick.getPort("S4"); 				// Fargesensor
+
+		/* Definerer en lyssensor og lysAvleser */
+		NXTLightSensor lysSensorS1 = new NXTLightSensor(s1);
+		SampleProvider lysLeserS1 = lysSensorS1.getRedMode();
+		float[] lysSampleS1 = new float[lysLeserS1.sampleSize()];
 
 		/* Definerer en fargesensor og fargeAvleser */
-		EV3ColorSensor fargesensorS1 = new EV3ColorSensor(s1);	 		// Fargesensor1
-		SampleProvider fargeLeserS1 = fargesensorS1.getMode("RGB");  	//
-		float[] fargeSampleS1 = new float[fargeLeserS1.sampleSize()];	//
-
-		/* Definerer en fargesensor og fargeAvleser */
-		EV3ColorSensor fargesensorS2 = new EV3ColorSensor(s2);	 		// Fargesensor2
-		SampleProvider fargeLeserS2 = fargesensorS2.getMode("RGB");  	//
-		float[] fargeSampleS2 = new float[fargeLeserS2.sampleSize()];	//
+		EV3ColorSensor fargesensorS4 = new EV3ColorSensor(s4);	 		// Fargesensor2
+		SampleProvider fargeLeserS4 = fargesensorS4.getMode("RGB");  	//
+		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
 
 		// Klassevariabler
-		final double fargeTerskelS1 = 1;			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS2 = 1; 			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighet = 400;
 		final int motorHastighetRevers = 200;
 		final int rotasjonsHastighetSweep = 50;
@@ -73,10 +74,10 @@ public class LinjeFoelger {
 
 
 		while(true){
-			fargeLeserS1.fetchSample(fargeSampleS1, 0);	// Les av farge
-			fargeLeserS2.fetchSample(fargeSampleS2, 0);	//
+			lysLeserS1.fetchSample(lysSampleS1, 0);	// Les av farge
+			fargeLeserS4.fetchSample(fargeSampleS4, 0);	//
 
-			if(verdiTerskelSammenlign(fargeSampleS1[0], true, fargeTerskelS1)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
+			if(verdiTerskelSammenlign(lysSampleS1[0], true, fargeTerskelS1)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
 				Motor.A.stop(true);
 				Motor.B.stop();
 
@@ -84,15 +85,15 @@ public class LinjeFoelger {
 				Motor.A.backward();
 				Motor.B.backward();
 
-				while(verdiTerskelSammenlign(fargeSampleS1[0], true, fargeTerskelS1)){
-					fargeLeserS1.fetchSample(fargeSampleS1, 0);	// Les av farge
+				while(verdiTerskelSammenlign(lysSampleS1[0], true, fargeTerskelS1)){
+					lysLeserS1.fetchSample(lysSampleS1, 0);	// Les av farge
 
 				}
 
 				Motor.A.stop(true);
 				Motor.B.stop(true);
 
-			} else if(verdiTerskelSammenlign(fargeSampleS2[0], true, fargeTerskelS2)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
+			} else if(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
 			//SWEEP
 			//SWEEP
 		double tidStartAvSvartLinje = 0;
@@ -128,8 +129,8 @@ public class LinjeFoelger {
 		long a = System.nanoTime() - startTid;
 
 		//tidStartAvSvartLinje = tiden naar svart linje sees
-		while(verdiTerskelSammenlign(fargeSampleS2[0], true, fargeTerskelS2)){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
-			fargeLeserS2.fetchSample(fargeSampleS2, 0);
+		while(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
+			fargeLeserS4.fetchSample(fargeSampleS4, 0);
 		}
 
 
@@ -177,8 +178,8 @@ public class LinjeFoelger {
 
 
 
-	fargesensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
-	fargesensorS2.close();	//
+	lysSensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
+	fargesensorS4.close();	//
 	}
 
 
