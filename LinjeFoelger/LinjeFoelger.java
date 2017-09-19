@@ -68,8 +68,8 @@ public class LinjeFoelger {
 
 		boolean hoeyreEllerVenstre = false;				//Om = 1, gaar banen rundt til venstre, ellers hoeyre (Spoers hvilken vei i banen man kjoerer)
 
-		Motor.A.setSpeed(motorHastighet);
-		Motor.B.setSpeed(-motorHastighet);
+		Motor.A.setSpeed(-motorHastighet);
+		Motor.B.setSpeed(motorHastighet);
 
 
 		while(true){
@@ -108,8 +108,8 @@ public class LinjeFoelger {
 		}
 
 		//Sett rotasjon til rotasjonsHastighetSweep
-		Motor.A.setSpeed(rotasjonsHastighetSweep);
-		Motor.B.setSpeed(-rotasjonsHastighetSweep);
+		Motor.A.setSpeed(-rotasjonsHastighetSweep);
+		Motor.B.setSpeed(rotasjonsHastighetSweep);
 
 		//start timer
 		long startTid = System.nanoTime();
@@ -156,8 +156,8 @@ public class LinjeFoelger {
 
 
 		//Tilbakestill motorhastighet til motorhastighet
-		Motor.A.setSpeed(motorHastighet);
-		Motor.B.setSpeed(-motorHastighet);
+		Motor.A.setSpeed(-motorHastighet);
+		Motor.B.setSpeed(motorHastighet);
 
 			//SWEEP
 			//SWEEP
