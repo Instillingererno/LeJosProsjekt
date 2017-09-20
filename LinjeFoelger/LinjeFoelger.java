@@ -79,7 +79,7 @@ public class LinjeFoelger {
 
 			if(verdiTerskelSammenlign(lysSampleS1[0], true, fargeTerskelS1)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
 				Motor.A.stop(true);
-				Motor.B.stop();
+				Motor.B.stop(); // Hvorfor ingen true her?
 
 				//Rygg til  ser svart linje
 				Motor.A.backward();
