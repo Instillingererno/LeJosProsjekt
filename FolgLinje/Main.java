@@ -16,30 +16,45 @@ import lejos.hardware.Button;					// Maa inkluderes saa EV3-biblioteket kan bruk
 import javax.swing.Timer;						// Maa inkluderes saa man kan lage en timer og ta tid paa noe
 												// Klassene maa inkluderes saa programmet kan ta bruk av metoder i klassene
 
+/* -----------------------------------------------------------------------------
+
+	Trenger og:
+	-Rebound så hvis den må svinge skarpt må den og svinge skarpt når den
+	treffer den svarte streken for å balansere seg selv
+
+------------------------------------------------------------------------------*/
+
 
 class Main {
 
 	public static void main(String[] args) {
 
 		Move unit = new Move(); // Init move object
+		Think brain = new Think();
+		brain.start();
 		int buttons = 0; // Knapper som er trykket
-		boolean continue = true; //Fortsett eller ikke
+		boolean cont = true; //Fortsett eller ikke
 
-		while(continue) {
+		while(cont) {
 			buttons = Button.readButtons();
-			if(Integer.toString(knappVerdi).contains("2")) {
-				continue = false;
+			if(Integer.toString(buttons).contains("2")) {
+				cont = false;
 			}
-
+			brain.newStartTime();
+			unit.forward();
 
 		}
-
 		unit.exit();
-
 	}
-
 }
 class Init { // Initializing
+
+	//Variabler
+	final double lightFloorS1 = 0.32;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+	final double colorFloorS4 = 0.02; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+	float forwardSpeed = 100;
+	float turnDelta = 0;
+	int multiplier = 1;
 
 	Brick brick = BrickFinder.getDefault();
 	Port s1 = brick.getPort("S1"); 				// LysSensor
@@ -59,14 +74,41 @@ class Init { // Initializing
 		lysSensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
 		fargesensorS4.close();	//
 	}
-
+	public void setTurnDelta(float delta) {
+		turnDelta = delta;
+	}
 }
 
-class Think extends Init { // Behaviour
-
+class Move extends Init { // Movement
+	public void forward() {
+		Motor.A.setSpeed(forwardSpeed + turnDelta);
+		Motor.B.setSpeed(-(forwardSpeed + turnDelta));
+		Motor.A.forward();
+		Motor.B.forward();
+		fargeLeserS4.fetchSample(fargeSampleS4, 0);
+		if(fargeLeserS4[0] < 0.7) {
+			unit.setTurnDelta();
+		}
+	}
 }
 
-class Move extends Think { // Movement
+class Think extends Thread { // Behaviour // Til aa gjoere matte and stuff
+	public float turnDelta = 0;
+	long startTime = 0; // System.nanoTime();
+	long deltaTime = 0;
 
+	public void run() {
+		startTime = System.nanoTime();
+		while(true) {
+			deltaTime = startTime - System.nanoTime();
+			turnDelta = (deltaTime * deltaTime) / 10000000;
+		}
+	}
+
+	public void newStartTime() {
+		startTime = System.nanoTime();
+	}
+	public float getTurnDelta() {
+		return turnDelta;
+	}
 }
-
