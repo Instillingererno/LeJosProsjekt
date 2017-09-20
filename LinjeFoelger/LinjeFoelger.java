@@ -48,6 +48,10 @@ public class LinjeFoelger {
 		Port s1 = brick.getPort("S1"); 				// LysSensor
 		Port s4 = brick.getPort("S4"); 				// Fargesensor
 
+		EV3 ev3 = (EV3) BrickFinder.getLocal();
+		TextLCD lcd = ev3.getTextLCD();
+		Keys keys = ev3.getKeys();
+
 		/* Definerer en lyssensor og lysAvleser */
 		NXTLightSensor lysSensorS1 = new NXTLightSensor(s1);
 		SampleProvider lysLeserS1 = lysSensorS1.getRedMode();
@@ -58,26 +62,37 @@ public class LinjeFoelger {
 		SampleProvider fargeLeserS4 = fargesensorS4.getMode("RGB");  	//
 		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
-
 		// Klassevariabler
-		final double fargeTerskelS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double lysTerskelS1 = 0.32;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS4 = 0.02; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighet = 400;
 		final int motorHastighetRevers = 200;
-		final int rotasjonsHastighetSweep = 50;
+		final int rotasjonsHastighetSweep = 25;
 		int knappVerdi = 0;
+		long tidÅSvinge = 3000000;								// Nanosekunder
 
 		boolean hoeyreEllerVenstre = false;				//Om = 1, gaar banen rundt til venstre, ellers hoeyre (Spoers hvilken vei i banen man kjoerer)
 
-		Motor.A.setSpeed(-motorHastighet);
-		Motor.B.setSpeed(motorHastighet);
+		Motor.A.setSpeed(motorHastighet);
+		Motor.B.setSpeed(-motorHastighet);
 
 
 		while(true){
 			lysLeserS1.fetchSample(lysSampleS1, 0);	// Les av farge
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);	//
 
-			if(verdiTerskelSammenlign(lysSampleS1[0], true, fargeTerskelS1)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
+			lcd.drawString("Lys/S1: " + lysSampleS1[0], 0,1);
+			lcd.drawString("lys/S1: " + verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1), 0,2);
+
+			lcd.drawString("Farge/S4: " + fargeSampleS4[0], 0,3);
+			lcd.drawString("Farge/S4:: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,4);
+
+
+
+
+
+
+			if(verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1)){	// Sammenligner verdi og terskel og returnerer underOver?true/false.
 				Motor.A.stop(true);
 				Motor.B.stop();
 
@@ -85,81 +100,95 @@ public class LinjeFoelger {
 				Motor.A.backward();
 				Motor.B.backward();
 
-				while(verdiTerskelSammenlign(lysSampleS1[0], true, fargeTerskelS1)){
-					lysLeserS1.fetchSample(lysSampleS1, 0);	// Les av farge
+				while(verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1)){
+					lcd.drawString("Lys/S1: " + lysSampleS1[0], 0,1);
+					lcd.drawString("lys/S1: " + verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1), 0,2);
+
+					lcd.drawString("Farge/S4: " + fargeSampleS4[0], 0,3);
+					lcd.drawString("Farge/S4:: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,4);
 
 				}
 
 				Motor.A.stop(true);
 				Motor.B.stop(true);
 
-			} else if(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){	// Sammenligner verdi og terskel og returnerer overUnder?true/false.
+			} else if(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){	// Sammenligner verdi og terskel og returnerer underOver?true/false.
 			//SWEEP
 			//SWEEP
-		double tidStartAvSvartLinje = 0;
-		double tidSluttAvSvartLinje = 0;
-		double tidMellom = 0;
-		boolean settSvartLinje = false;
+				/*
+				double tidStartAvSvartLinje = 0;
+				double tidSluttAvSvartLinje = 0;
+				double tidMellom = 0;
+				boolean settSvartLinje = false;
 
-		//Roter venstre/hoeyre 90 grader foer neste linje utfoeres
-		if(hoeyreEllerVenstre == true){
-			//Roter 90 grader til venstre
-		} else {
-			//Roter 90 grader til hoeyre
-		}
+				//Roter venstre/hoeyre 90 grader foer neste linje utfoeres
+				long z = System.nanoTime();
 
-		//Sett rotasjon til rotasjonsHastighetSweep
-		Motor.A.setSpeed(-rotasjonsHastighetSweep);
-		Motor.B.setSpeed(rotasjonsHastighetSweep);
+				while(System.nanoTime() < z + tidÅSvinge){
+					if(hoeyreEllerVenstre == true){
+						//Roter 90 grader til venstre
 
-		//start timer
-		long startTid = System.nanoTime();
+					} else {
+						//Roter 90 grader til hoeyre
+					}
+				}
 
+				//Sett rotasjon til rotasjonsHastighetSweep
+				Motor.A.setSpeed(-rotasjonsHastighetSweep);
+				Motor.B.setSpeed(rotasjonsHastighetSweep);
 
-		if(hoeyreEllerVenstre == true){
-			//Begynn rotasjon mot hoeyre
-			Motor.A.forward();
-			Motor.B.backward();
-		} else {
-			//Begynn rotasjon mot venstre
-			Motor.A.backward();
-			Motor.B.forward();
-		}
-
-		long a = System.nanoTime() - startTid;
-
-		//tidStartAvSvartLinje = tiden naar svart linje sees
-		while(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
-			fargeLeserS4.fetchSample(fargeSampleS4, 0);
-		}
+				//start timer
+				long startTid = System.nanoTime();
 
 
-		//tidSluttAvSvartLinje = tiden naar ikke svart linje sees, etter svart linje har blitt sett
-		long b = System.nanoTime() - startTid;
-		//Regn ut tidMellom
-		long c = (b - a) / 2;
-		//Roter sakte tilbake i (Naaverende tid - tidMellom) sekunder
+				if(hoeyreEllerVenstre == true){
+					//Begynn rotasjon mot hoeyre
+					Motor.A.forward();
+					Motor.B.backward();
+				} else {
+					//Begynn rotasjon mot venstre
+					Motor.A.backward();
+					Motor.B.forward();
+				}
 
-		b = System.nanoTime();
-		if(hoeyreEllerVenstre == true){
-			while((System.nanoTime()) < (c + b)){
-				//Begynn rotasjon mot hoeyre
-				Motor.A.forward();
-				Motor.B.backward();
-			}
-		} else {
-			while((System.nanoTime()) < (c + b)){
-				//Begynn rotasjon mot venstre
-				Motor.A.backward();
-				Motor.B.forward();
-			}
-		}
+				long a = System.nanoTime() - startTid;
+
+				//tidStartAvSvartLinje = tiden naar svart linje sees
+				while(verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4)){ // Sammenligner verdi og terskel og returnerer underOver?true/false.
+					lcd.drawString("Lys/S1: " + lysSampleS1[0], 0,1);
+					lcd.drawString("lys/S1: " + verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1), 0,2);
+
+					lcd.drawString("Farge/S4: " + fargeSampleS4[0], 0,3);
+					lcd.drawString("Farge/S4:: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,4);
+				}
 
 
-		//Tilbakestill motorhastighet til motorhastighet
-		Motor.A.setSpeed(-motorHastighet);
-		Motor.B.setSpeed(motorHastighet);
+				//tidSluttAvSvartLinje = tiden naar ikke svart linje sees, etter svart linje har blitt sett
+				long b = System.nanoTime() - startTid;
+				//Regn ut tidMellom
+				long c = (b - a) / 2;
+				//Roter sakte tilbake i (Naaverende tid - tidMellom) sekunder
 
+				b = System.nanoTime();
+				if(hoeyreEllerVenstre == true){
+					while((System.nanoTime()) < (c + b)){
+						//Begynn rotasjon mot hoeyre
+						Motor.A.backward();
+						Motor.B.forward();
+					}
+				} else {
+					while((System.nanoTime()) < (c + b)){
+						//Begynn rotasjon mot venstre
+						Motor.A.forward();
+						Motor.B.backward();
+					}
+				}
+
+
+				//Tilbakestill motorhastighet til motorhastighet
+				Motor.A.setSpeed(motorHastighet);
+				Motor.B.setSpeed(-motorHastighet);
+				*/
 			//SWEEP
 			//SWEEP
 
@@ -184,18 +213,18 @@ public class LinjeFoelger {
 
 
 
-	public static boolean verdiTerskelSammenlign(double verdi, boolean overUnder, double terskelSomSkalBrukes){ // Sammenligner verdi og terskel og returnerer overUnder?true/false.
-		if(overUnder = true){
-			if((verdi * 100) > terskelSomSkalBrukes){
-				return true;
-			} else {
+	public static boolean verdiTerskelSammenlign(double verdi, boolean underOver, double terskelSomSkalBrukes){ // Sammenligner verdi og terskel og returnerer underOver?true/false.
+		if(underOver = true){
+			if((verdi) > terskelSomSkalBrukes){
 				return false;
+			} else {
+				return true;
 			}
 		} else {
-			if((verdi * 100) < terskelSomSkalBrukes){
-				return true;
-			} else {
+			if((verdi) < terskelSomSkalBrukes){
 				return false;
+			} else {
+				return true;
 			}
 		}
 	}
