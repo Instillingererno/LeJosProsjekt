@@ -23,14 +23,14 @@ class Main {
 
 		Move unit = new Move(); // Init move object
 		int buttons = 0; // Knapper som er trykket
-		boolean continue = true; //Fortsett eller ikke
+		boolean cont = true; //Fortsett eller ikke
 
-		while(continue) {
+		while(cont) {
 			buttons = Button.readButtons();
-			if(Integer.toString(knappVerdi).contains("2")) {
-				continue = false;
+			if(Integer.toString(buttons).contains("2")) {
+				cont = false;
 			}
-
+			unit.forward();
 
 		}
 
@@ -40,6 +40,11 @@ class Main {
 
 }
 class Init { // Initializing
+
+	//Variabler
+	final double lightFloorS1 = 0.32;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+	final double colorFloorS4 = 0.02; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+	final int forwardSpeed = 100;
 
 	Brick brick = BrickFinder.getDefault();
 	Port s1 = brick.getPort("S1"); 				// LysSensor
@@ -62,11 +67,22 @@ class Init { // Initializing
 
 }
 
-class Think extends Init { // Behaviour
-
-}
-
 class Move extends Think { // Movement
+	public void forward()
+		Motor.A.setSpeed(forwardSpeed + turnDelta);
+		Motor.B.setSpeed(-(forwardSpeed + turnDelta));
+	}
 
 }
 
+class Think extends Thread { // Behaviour // Til aa gjoere matte and stuff
+	float turnValue = 0;
+	float turnDelta = 0;
+	long startTime = 0; // System.nanoTime();
+	long deltaTime = 0;
+
+	public void run() {
+
+
+	}
+}
