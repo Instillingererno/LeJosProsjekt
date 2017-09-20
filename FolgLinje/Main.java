@@ -28,7 +28,7 @@ class Main {
 		while(continue) {
 			buttons = Button.readButtons();
 			if(Integer.toString(knappVerdi).contains("2")) {
-				break;
+				continue = false;
 			}
 
 
