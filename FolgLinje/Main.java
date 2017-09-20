@@ -21,7 +21,20 @@ class Main {
 
 	public static void main(String[] args) {
 
+		Move unit = new Move(); // Init move object
+		int buttons = 0; // Knapper som er trykket
+		boolean continue = true; //Fortsett eller ikke
 
+		while(continue) {
+			buttons = Button.readButtons();
+			if(Integer.toString(knappVerdi).contains("2")) {
+				break;
+			}
+
+
+		}
+
+		unit.exit();
 
 	}
 
@@ -42,18 +55,18 @@ class Init { // Initializing
 	SampleProvider fargeLeserS4 = fargesensorS4.getMode("RGB");  	//
 	float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
-	public exit() {
+	public void exit() {
 		lysSensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
 		fargesensorS4.close();	//
 	}
 
 }
 
-class Move extends Init { // Movement
+class Think extends Init { // Behaviour
 
 }
 
-class Think extends Init { // Behaviour
+class Move extends Think { // Movement
 
 }
 
