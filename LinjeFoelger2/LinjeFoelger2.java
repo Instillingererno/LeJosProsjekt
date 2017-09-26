@@ -57,24 +57,23 @@ public class LinjeFoelger2 {
 		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
 		// Klassevariabler
-		final double lysTerskelS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS4 = 0.025; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double lysTerskelS1 = 0.43;					// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS4 = 0.04; 				// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighetMin = 400;
 		double motorHastighet = 0;
 		final int motorHastighetMax = 900;
-		final double motorHastighetAkselerasjon = 0.3;
+		final double motorHastighetAkselerasjon = 5;
 		final int tidenDetTarÅPassereKryss = 200; 			//ms
-		final double svingeAkselerasjon = 0.005;				// 1 %
-		final double svingeAkselerasjonBaneRetning = 0.01;				// 2 %
-		final double svingeForholdBegynnelse = 1.01;
-		final double svingeForholdBegynnelseBaneRetning = 1.05;
-		final double SvingeForholdMax = 10.0;				//En motor kan bare kjøre så lite som 1/10 så fort som den andre
+		final double svingeAkselerasjon = 1;				// 1 %
+		final double svingeAkselerasjonBaneRetning = 0.7;				// 2 %
+		final double svingeForholdBegynnelse = 102;
+		final double svingeForholdBegynnelseBaneRetning = 105;
+		final double SvingeForholdMax = 500;				//En motor kan bare kjøre så lite som 1/10 så fort som den andre
 
 		double sisteTid = 0;
 		double sisteFrekvens = 0;
 		double frekvensNaa = 0;
 		double frekvens = 0;
-
 		int antallJusteringer = 0;
 
 		int knappVerdi = 0;
@@ -109,7 +108,7 @@ public class LinjeFoelger2 {
 					frekvensNaa = 0;
 					antallJusteringer = 0;
 				}
-				frekvens = (frekvensNaa + sisteFrekvens)/2;
+				frekvens = (Math.abs(frekvensNaa) + Math.abs(sisteFrekvens))/2;
 
 
 
@@ -124,15 +123,15 @@ public class LinjeFoelger2 {
 
 			// Oppdater sving
 			if(venstreEllerHoeyre){
-				Motor.C.setSpeed((int)(motorHastighet * (1/svingeForhold)));
+				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold/100)));
 				Motor.D.setSpeed((int)-motorHastighet);					//Venstremotor er raskest, hoeyremotor tilpasser seg
-				lcd.drawString("HastighetC: " + (int)(motorHastighet * (1/svingeForhold)), 0,5);
+				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold/100)), 0,5);
 				lcd.drawString("HastighetD: " + motorHastighet, 0,6);
 			} else{
 				Motor.C.setSpeed((int)motorHastighet);					//Hoeyremotor er raskest, venstremotor tilpasser seg
-				Motor.D.setSpeed((int)(-motorHastighet * (1/svingeForhold)));
+				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold/100)));
 				lcd.drawString("HastighetC: " + motorHastighet, 0,5);
-				lcd.drawString("HastighetD: " + (int)(motorHastighet * (1/svingeForhold)), 0,6);
+				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold/100)), 0,6);
 			}
 
 			Motor.C.backward();
