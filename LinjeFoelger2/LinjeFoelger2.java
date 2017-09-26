@@ -58,7 +58,7 @@ public class LinjeFoelger2 {
 
 		// Klassevariabler
 		final double lysTerskelS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS4 = 0.01; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS4 = 0.025; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final int motorHastighetMin = 400;
 		double motorHastighet = 0;
 		final int motorHastighetMax = 900;
