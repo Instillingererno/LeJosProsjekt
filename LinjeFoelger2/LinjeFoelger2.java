@@ -21,8 +21,7 @@ import javax.swing.Timer;						// Maa inkluderes saa man kan lage en timer og ta
 /*
 		Maa gjoeres
 
-	Spoerre om banen svinger mot hoeyre eller venstre foer start, gjoeres for aa bestemme hvilke vei sweng metoden skal svinge 90 grader foer den "sweeper"
-	Gjoeres ved at man ber brukeren, trykke paa pilknapp i retning av hvordan banen svinger.
+	Spoerre om banen svinger mot hoeyre eller venstre foer start.
 
 	SvingeAkselerasjon må være større i retningen banen går.
 
@@ -61,15 +60,15 @@ public class LinjeFoelger2 {
 		// Klassevariabler
 		final double lysTerskelS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double fargeTerskelS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighetMin = 400;
-		double motorHastighet = 300;
+		final int motorHastighetMin = 700;
+		double motorHastighet = 0;
 		final int motorHastighetMax = 900;
 		final double motorHastighetAkselerasjon = 1;
 		final int tidenDetTarÅPassereKryss = 200; 			//ms
-		double svingeAkselerasjon = 0.001 * 10000;							// 1 %
-		double svingeAkselerasjonBaneRetning = 0.001 * 10000;				// 2 %
-		final double svingeForholdBegynnelse = 1.0;
-		final double svingeForholdBegynnelseBaneRetning = 1.0;
+		double svingeAkselerasjon = 6;							// 1 %
+		double svingeAkselerasjonBaneRetning = 8;				// 2 %
+		final double svingeForholdBegynnelse = 0.60;
+		final double svingeForholdBegynnelseBaneRetning = 0.40;
 
 		double sisteTid = 0;
 		double sisteFrekvens = 0;
@@ -127,15 +126,13 @@ public class LinjeFoelger2 {
 
 			// Oppdater sving
 			if(venstreEllerHoeyre){
-				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)));
+				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold)));
 				Motor.D.setSpeed((int)-motorHastighet);					//Venstremotor er raskest, hoeyremotor tilpasser seg
-				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)), 0,5);
 				lcd.drawString("HastighetD: " + motorHastighet, 0,6);
 			} else{
 				Motor.C.setSpeed((int)motorHastighet);					//Hoeyremotor er raskest, venstremotor tilpasser seg
-				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)));
-				lcd.drawString("HastighetC: " + motorHastighet, 0,5);
-				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)), 0,6);
+				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold)));
+				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold)), 0,6);
 			}
 
 			Motor.C.backward();
@@ -170,19 +167,19 @@ public class LinjeFoelger2 {
 
 
 			knappVerdi = Button.readButtons();
-			if(Integer.toString(knappVerdi).contains("8")){
+			if(Integer.toString(knappVerdi).equals("8")){
 				svingeAkselerasjon -= 1.0;
 				svingeAkselerasjonBaneRetning -= 1.0;
 			}
-			if(Integer.toString(knappVerdi).contains("16")){
+			if(Integer.toString(knappVerdi).equals("16")){
 				svingeAkselerasjon += 1.0;
 				svingeAkselerasjonBaneRetning += 1.0;
 			}
-			if(Integer.toString(knappVerdi).contains("1")){
-				motorHastighet += 30;
+			if(Integer.toString(knappVerdi).equals("1")){
+				motorHastighet += 10;
 			}
-			if(Integer.toString(knappVerdi).contains("2")){
-				motorHastighet -= 30;
+			if(Integer.toString(knappVerdi).equals("4")){
+				motorHastighet -= 10;
 			}
 
 
