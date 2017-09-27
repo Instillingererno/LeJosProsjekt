@@ -38,7 +38,7 @@ class main {
 		//Variabler
 		final double lightFloorS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double colorFloorS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		float backwardSpeed = 50;
+		float backwardSpeed = 400;
 
 		Brick brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1"); 				// LysSensor
@@ -55,7 +55,7 @@ class main {
 		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
 		//MOVE
-		float turnDelta = 2;
+		float turnDelta = 14;
 		long startTime = System.nanoTime(); // System.nanoTime();
 		long deltaTime = 0;
 		int teller = 0;
@@ -77,8 +77,8 @@ class main {
 			}
 			lcd.drawString("Speed: " + backwardSpeed, 0, 1);
 			lcd.drawString("TurnDelta: " + turnDelta, 0, 2);
-			lcd.drawString("Colorfloor: " + colorFloorS4, 0, 3);
-			lcd.drawString("Lightfloor: " + lightFloorS1, 0, 4);
+			lcd.drawString("Colorfloor: " + fargeSampleS4[0], 0, 3);
+			lcd.drawString("Lightfloor: " + lysSampleS1[0], 0, 4);
 
 			Motor.C.setSpeed(backwardSpeed + turnDelta * multiplier);
 			Motor.D.setSpeed(backwardSpeed - turnDelta * multiplier);
@@ -89,10 +89,10 @@ class main {
 			if(fargeSampleS4[0] < colorFloorS4) {
 				multiplier = 12 + teller;
 				teller++;
-			}/* else if(lysSampleS1[0] < lightFloorS1) {
+			} else if(lysSampleS1[0] < lightFloorS1) {
 				multiplier = -12 - teller;
 				teller++;
-			}*/ else {
+			} else {
 				teller = 0;
 				if(multiplier < 0) {
 					multiplier = -1;
