@@ -87,17 +87,17 @@ class main {
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);
 			lysLeserS1.fetchSample(lysSampleS1, 0);
 			if(fargeSampleS4[0] < colorFloorS4) {
-				multiplier = 5 + teller;
+				multiplier = 12 + teller;
 				teller++;
-			} else if(lysSampleS1[0] < lightFloorS1) {
-				multiplier = -5 - teller;
+			}/* else if(lysSampleS1[0] < lightFloorS1) {
+				multiplier = -12 - teller;
 				teller++;
-			} else {
+			}*/ else {
 				teller = 0;
 				if(multiplier < 0) {
-					multiplier = -3;
+					multiplier = -1;
 				} else {
-					multiplier = 3;
+					multiplier = 1;
 				}
 			}
 		}
