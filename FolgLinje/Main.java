@@ -66,13 +66,13 @@ class main {
 			if(Integer.toString(buttons).equals("2")) {
 				cont = false;
 			} else if (Integer.toString(buttons).equals("1")) {
-				backwardSpeed += 50;
+				backwardSpeed += 5;
 			} else if (Integer.toString(buttons).equals("4")) {
-				backwardSpeed -= 50;
+				backwardSpeed -= 5;
 			} else if (Integer.toString(buttons).equals("8")) {
-				turnDelta += 10;
+				turnDelta += 1;
 			} else if (Integer.toString(buttons).equals("16")) {
-				turnDelta -= 10;
+				turnDelta -= 1;
 			}
 			lcd.drawString("Speed: " + backwardSpeed, 0, 1);
 			lcd.drawString("TurnDelta: " + turnDelta, 0, 2);
