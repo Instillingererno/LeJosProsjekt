@@ -26,6 +26,8 @@ import javax.swing.Timer;						// Maa inkluderes saa man kan lage en timer og ta
 
 	SvingeAkselerasjon må være større i retningen banen går.
 
+	Maks svingeforhold
+
 	En metode som ser på hvor ofte bilen svinger, jo større frekvensNaa av antall svingninger per tid, jo tregere fart.
 		Kan gjoeres
 
@@ -57,23 +59,23 @@ public class LinjeFoelger2 {
 		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
 		// Klassevariabler
-		final double lysTerskelS1 = 0.43;					// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS4 = 0.04; 				// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighetMin = 400;
+		final double lysTerskelS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double fargeTerskelS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final int motorHastighetMin = 50;
 		double motorHastighet = 0;
-		final int motorHastighetMax = 900;
-		final double motorHastighetAkselerasjon = 5;
+		final int motorHastighetMax = 100;
+		final double motorHastighetAkselerasjon = 1;
 		final int tidenDetTarÅPassereKryss = 200; 			//ms
-		final double svingeAkselerasjon = 1;				// 1 %
-		final double svingeAkselerasjonBaneRetning = 0.7;				// 2 %
-		final double svingeForholdBegynnelse = 102;
-		final double svingeForholdBegynnelseBaneRetning = 105;
-		final double SvingeForholdMax = 500;				//En motor kan bare kjøre så lite som 1/10 så fort som den andre
+		double svingeAkselerasjon = -0.01;							// 1 %
+		double svingeAkselerasjonBaneRetning = -0.01;				// 2 %
+		final double svingeForholdBegynnelse = 0.99;
+		final double svingeForholdBegynnelseBaneRetning = 0.99;
 
 		double sisteTid = 0;
 		double sisteFrekvens = 0;
 		double frekvensNaa = 0;
 		double frekvens = 0;
+
 		int antallJusteringer = 0;
 
 		int knappVerdi = 0;
@@ -84,7 +86,6 @@ public class LinjeFoelger2 {
 		boolean gaarBanenMotVenstreEllerHoeyre = true;		//Om = true, gaar banen rundt til venstre, ellers hoeyre (Spoers hvilken vei i banen man kjoerer)
 
 
-		//long tidAASvinge = 300000000; //0.3 sek			// Nanosekunder
 
 
 		motorHastighet = motorHastighetMin;
@@ -92,13 +93,12 @@ public class LinjeFoelger2 {
 
 		while(true){
 			lysLeserS1.fetchSample(lysSampleS1, 0);	// Les av farge
-			lcd.drawString("Lys/S1: " + lysSampleS1[0], 0,1);
-			lcd.drawString("lys/S1: " + verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1), 0,2);
+			lcd.drawString("lys/S1: " + verdiTerskelSammenlign(lysSampleS1[0], true, lysTerskelS1), 0,1);
 
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);	//
-			lcd.drawString("Farge/S4: " + fargeSampleS4[0], 0,3);
-			lcd.drawString("Farge/S4:: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,4);
+			lcd.drawString("Farge/S4: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,2);
 
+			lcd.drawString("SA: " + svingeAkselerasjon, 0,3);
 			// Oppdater frekvens
 				sisteTid = System.nanoTime() * 1000000000;
 				frekvensNaa = antallJusteringer / sisteTid;
@@ -108,13 +108,13 @@ public class LinjeFoelger2 {
 					frekvensNaa = 0;
 					antallJusteringer = 0;
 				}
-				frekvens = (Math.abs(frekvensNaa) + Math.abs(sisteFrekvens))/2;
+				frekvens = (frekvensNaa + sisteFrekvens)/2;
 
 
 
 
 			// Oppdater svingeforhold
-			svingeForhold = oppdaterSvingeForhold(venstreEllerHoeyre, gaarBanenMotVenstreEllerHoeyre, svingeAkselerasjon, svingeAkselerasjonBaneRetning, svingeForhold);
+				svingeForhold = oppdaterSvingeForhold(venstreEllerHoeyre, gaarBanenMotVenstreEllerHoeyre, svingeAkselerasjon, svingeAkselerasjonBaneRetning, svingeForhold);
 
 			// Oppdater hastighet
 			if(motorHastighet < motorHastighetMax){
@@ -123,15 +123,15 @@ public class LinjeFoelger2 {
 
 			// Oppdater sving
 			if(venstreEllerHoeyre){
-				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold/100)));
+				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold)));
 				Motor.D.setSpeed((int)-motorHastighet);					//Venstremotor er raskest, hoeyremotor tilpasser seg
-				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold/100)), 0,5);
+				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold)), 0,5);
 				lcd.drawString("HastighetD: " + motorHastighet, 0,6);
 			} else{
 				Motor.C.setSpeed((int)motorHastighet);					//Hoeyremotor er raskest, venstremotor tilpasser seg
-				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold/100)));
+				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold)));
 				lcd.drawString("HastighetC: " + motorHastighet, 0,5);
-				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold/100)), 0,6);
+				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold)), 0,6);
 			}
 
 			Motor.C.backward();
@@ -165,10 +165,19 @@ public class LinjeFoelger2 {
 
 
 
-			knappVerdi = Button.readButtons();				//
-			if(Integer.toString(knappVerdi).contains("2")){	//
-				break;										//
+			knappVerdi = Button.readButtons();
+			if(Integer.toString(knappVerdi).contains("1")){
+				svingeAkselerasjon -= 0.005;
+				svingeAkselerasjonBaneRetning -= 0.005;
 			}
+			if(Integer.toString(knappVerdi).contains("4")){
+				svingeAkselerasjon += 0.005;
+				svingeAkselerasjonBaneRetning += 0.005;
+			}
+			if(Integer.toString(knappVerdi).contains("8")){
+				break;
+			}
+
 		}
 
 			/*
