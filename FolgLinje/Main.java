@@ -90,15 +90,17 @@ class main {
 			if(fargeSampleS4[0] < colorFloorS4) {
 				multiplier = 12 + teller;
 				teller += 3;
-			} else if(lysSampleS1[0] < lightFloorS1) {
+			}
+			if(lysSampleS1[0] < lightFloorS1) {
 				multiplier = -12 - teller;
 				teller += tellerPluss;
-			} else {
+			}
+			if(fargeSampleS4[0] > colorFloorS4 && lysSampleS1[0] > lightFloorS1) {
 				teller = 0;
 				if(multiplier < 0) {
-					multiplier = -1;
+					multiplier = -12;
 				} else {
-					multiplier = 1;
+					multiplier = 12;
 				}
 			}
 		}
