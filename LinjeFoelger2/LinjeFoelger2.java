@@ -60,14 +60,14 @@ public class LinjeFoelger2 {
 		// Klassevariabler
 		final double lysTerskelS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double fargeTerskelS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighetMin = 700;
+		final int motorHastighetMin = 900;
 		double motorHastighet = 0;
 		final int motorHastighetMax = 900;
 		final double motorHastighetAkselerasjon = 1;
 		final int tidenDetTarÅPassereKryss = 200; 			//ms
 		double svingeAkselerasjon = 6;							// 1 %
 		double svingeAkselerasjonBaneRetning = 8;				// 2 %
-		final double svingeForholdBegynnelse = 0.60;
+		final double svingeForholdBegynnelse = 0.80;
 		final double svingeForholdBegynnelseBaneRetning = 0.40;
 
 		double sisteTid = 0;
@@ -113,7 +113,7 @@ public class LinjeFoelger2 {
 				}
 				frekvens = (frekvensNaa + sisteFrekvens)/2;
 
-
+			// hvorfor kan bitcoin være fremtidens valuta
 
 
 			// Oppdater svingeforhold
