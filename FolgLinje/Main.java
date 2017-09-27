@@ -36,7 +36,7 @@ class main {
 
 		//INIT
 		//Variabler
-		final double lightFloorS1 = 0.5;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double lightFloorS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double colorFloorS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		float backwardSpeed = 50;
 
@@ -58,6 +58,7 @@ class main {
 		float turnDelta = 2;
 		long startTime = System.nanoTime(); // System.nanoTime();
 		long deltaTime = 0;
+		int teller = 0;
 		int multiplier = 1;
 		boolean svart = false;
 
@@ -86,14 +87,17 @@ class main {
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);
 			lysLeserS1.fetchSample(lysSampleS1, 0);
 			if(fargeSampleS4[0] < colorFloorS4) {
-				multiplier = 10;
+				multiplier = 5 + teller;
+				teller++;
 			} else if(lysSampleS1[0] < lightFloorS1) {
-				multiplier = -10;
+				multiplier = -5 - teller;
+				teller++;
 			} else {
+				teller = 0;
 				if(multiplier < 0) {
-					multiplier = 2;
+					multiplier = -3;
 				} else {
-					multiplier = -2;
+					multiplier = 3;
 				}
 			}
 		}
