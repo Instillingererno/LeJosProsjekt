@@ -61,15 +61,15 @@ public class LinjeFoelger2 {
 		// Klassevariabler
 		final double lysTerskelS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double fargeTerskelS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighetMin = 50;
-		double motorHastighet = 0;
-		final int motorHastighetMax = 100;
+		final int motorHastighetMin = 400;
+		double motorHastighet = 300;
+		final int motorHastighetMax = 900;
 		final double motorHastighetAkselerasjon = 1;
 		final int tidenDetTarÅPassereKryss = 200; 			//ms
-		double svingeAkselerasjon = -0.01;							// 1 %
-		double svingeAkselerasjonBaneRetning = -0.01;				// 2 %
-		final double svingeForholdBegynnelse = 0.99;
-		final double svingeForholdBegynnelseBaneRetning = 0.99;
+		double svingeAkselerasjon = 0.001 * 10000;							// 1 %
+		double svingeAkselerasjonBaneRetning = 0.001 * 10000;				// 2 %
+		final double svingeForholdBegynnelse = 1.0;
+		final double svingeForholdBegynnelseBaneRetning = 1.0;
 
 		double sisteTid = 0;
 		double sisteFrekvens = 0;
@@ -99,6 +99,10 @@ public class LinjeFoelger2 {
 			lcd.drawString("Farge/S4: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,2);
 
 			lcd.drawString("SA: " + svingeAkselerasjon, 0,3);
+			lcd.drawString("SF: " + svingeForhold, 0,4);
+
+			lcd.drawString("MH: " + motorHastighet, 0,5);
+
 			// Oppdater frekvens
 				sisteTid = System.nanoTime() * 1000000000;
 				frekvensNaa = antallJusteringer / sisteTid;
@@ -117,21 +121,21 @@ public class LinjeFoelger2 {
 				svingeForhold = oppdaterSvingeForhold(venstreEllerHoeyre, gaarBanenMotVenstreEllerHoeyre, svingeAkselerasjon, svingeAkselerasjonBaneRetning, svingeForhold);
 
 			// Oppdater hastighet
-			if(motorHastighet < motorHastighetMax){
-				motorHastighet += motorHastighetAkselerasjon;
-			}
+			//if(motorHastighet < motorHastighetMax){
+			//	motorHastighet += motorHastighetAkselerasjon;
+			//}
 
 			// Oppdater sving
 			if(venstreEllerHoeyre){
-				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold)));
+				Motor.C.setSpeed((int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)));
 				Motor.D.setSpeed((int)-motorHastighet);					//Venstremotor er raskest, hoeyremotor tilpasser seg
-				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold)), 0,5);
+				lcd.drawString("HastighetC: " + (int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)), 0,5);
 				lcd.drawString("HastighetD: " + motorHastighet, 0,6);
 			} else{
 				Motor.C.setSpeed((int)motorHastighet);					//Hoeyremotor er raskest, venstremotor tilpasser seg
-				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold)));
+				Motor.D.setSpeed((int)(-motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)));
 				lcd.drawString("HastighetC: " + motorHastighet, 0,5);
-				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold)), 0,6);
+				lcd.drawString("HastighetD: " + (int)(motorHastighet * (svingeForhold*svingeForhold*svingeForhold*svingeForhold)), 0,6);
 			}
 
 			Motor.C.backward();
@@ -166,15 +170,24 @@ public class LinjeFoelger2 {
 
 
 			knappVerdi = Button.readButtons();
-			if(Integer.toString(knappVerdi).contains("1")){
-				svingeAkselerasjon -= 0.005;
-				svingeAkselerasjonBaneRetning -= 0.005;
-			}
-			if(Integer.toString(knappVerdi).contains("4")){
-				svingeAkselerasjon += 0.005;
-				svingeAkselerasjonBaneRetning += 0.005;
-			}
 			if(Integer.toString(knappVerdi).contains("8")){
+				svingeAkselerasjon -= 1.0;
+				svingeAkselerasjonBaneRetning -= 1.0;
+			}
+			if(Integer.toString(knappVerdi).contains("16")){
+				svingeAkselerasjon += 1.0;
+				svingeAkselerasjonBaneRetning += 1.0;
+			}
+			if(Integer.toString(knappVerdi).contains("1")){
+				motorHastighet += 30;
+			}
+			if(Integer.toString(knappVerdi).contains("2")){
+				motorHastighet -= 30;
+			}
+
+
+
+			if(fargeSampleS4[0] == 70){
 				break;
 			}
 
@@ -242,18 +255,20 @@ public class LinjeFoelger2 {
 	public static double oppdaterSvingeForhold(boolean venstreEllerHoeyre, boolean gaarBanenMotVenstreEllerHoeyre, double svingeAkselerasjon, double svingeAkselerasjonBaneRetning, double svingeForhold){
 		if(venstreEllerHoeyre){
 			if(gaarBanenMotVenstreEllerHoeyre){
-				svingeForhold += svingeAkselerasjonBaneRetning;
+				svingeForhold -= svingeAkselerasjonBaneRetning / 10000;
 			} else{
-				svingeForhold += svingeAkselerasjon;
+				svingeForhold -= svingeAkselerasjon / 10000;
 			}
 		} else{
 			if(gaarBanenMotVenstreEllerHoeyre){
-				svingeForhold += svingeAkselerasjon;
+				svingeForhold -= svingeAkselerasjon / 10000;
 			} else{
-				svingeForhold += svingeAkselerasjonBaneRetning;
+				svingeForhold -= svingeAkselerasjonBaneRetning / 10000;
 			}
 		}
-
+		if(svingeForhold < 0){
+			svingeForhold = 0;
+		}
 		return svingeForhold;
 	}
 
