@@ -36,9 +36,9 @@ class main {
 
 		//INIT
 		//Variabler
-		final double lightFloorS1 = 0.4;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double lightFloorS1 = 0.47;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		final double colorFloorS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		float backwardSpeed = 400;
+		float backwardSpeed = 450;
 
 		Brick brick = BrickFinder.getDefault();
 		Port s1 = brick.getPort("S1"); 				// LysSensor
@@ -55,12 +55,13 @@ class main {
 		float[] fargeSampleS4 = new float[fargeLeserS4.sampleSize()];	//
 
 		//MOVE
-		float turnDelta = 14;
+		float turnDelta = 1;
 		long startTime = System.nanoTime(); // System.nanoTime();
 		long deltaTime = 0;
 		int teller = 0;
 		int multiplier = 1;
 		boolean svart = false;
+		int tellerPluss = 20;
 
 		while(cont) {
 			buttons = Button.readButtons();
@@ -71,12 +72,12 @@ class main {
 			} else if (Integer.toString(buttons).equals("4")) {
 				backwardSpeed -= 5;
 			} else if (Integer.toString(buttons).equals("8")) {
-				turnDelta += 1;
+				tellerPluss += 1;
 			} else if (Integer.toString(buttons).equals("16")) {
-				turnDelta -= 1;
+				tellerPluss -= 1;
 			}
 			lcd.drawString("Speed: " + backwardSpeed, 0, 1);
-			lcd.drawString("TurnDelta: " + turnDelta, 0, 2);
+			lcd.drawString("Teller plus: " + tellerPluss, 0, 2);
 			lcd.drawString("Colorfloor: " + fargeSampleS4[0], 0, 3);
 			lcd.drawString("Lightfloor: " + lysSampleS1[0], 0, 4);
 
@@ -88,10 +89,10 @@ class main {
 			lysLeserS1.fetchSample(lysSampleS1, 0);
 			if(fargeSampleS4[0] < colorFloorS4) {
 				multiplier = 12 + teller;
-				teller++;
+				teller += 3;
 			} else if(lysSampleS1[0] < lightFloorS1) {
 				multiplier = -12 - teller;
-				teller++;
+				teller += tellerPluss;
 			} else {
 				teller = 0;
 				if(multiplier < 0) {
