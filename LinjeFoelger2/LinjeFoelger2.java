@@ -59,16 +59,15 @@ public class LinjeFoelger2 {
 
 		// Klassevariabler
 		final double lysTerskelS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double fargeTerskelS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final int motorHastighetMin = 900;
+		double fargeTerskelS4 = 0.043; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final int motorHastighetMin = 600;
 		double motorHastighet = 0;
 		final int motorHastighetMax = 900;
 		final double motorHastighetAkselerasjon = 1;
-		final int tidenDetTarÅPassereKryss = 200; 			//ms
-		double svingeAkselerasjon = 6;							// 1 %
+		double svingeAkselerasjon = 4;							// 1 %
 		double svingeAkselerasjonBaneRetning = 8;				// 2 %
-		final double svingeForholdBegynnelse = 0.80;
-		final double svingeForholdBegynnelseBaneRetning = 0.40;
+		final double svingeForholdBegynnelse = 0.60;
+		final double svingeForholdBegynnelseBaneRetning = 0.30;
 
 		double sisteTid = 0;
 		double sisteFrekvens = 0;
@@ -97,9 +96,8 @@ public class LinjeFoelger2 {
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);	//
 			lcd.drawString("Farge/S4: " + verdiTerskelSammenlign(fargeSampleS4[0], true, fargeTerskelS4), 0,2);
 
-			lcd.drawString("SA: " + svingeAkselerasjon, 0,3);
-			lcd.drawString("SF: " + svingeForhold, 0,4);
-
+			lcd.drawString("FT: " + fargeTerskelS4, 0,3);
+			lcd.drawString("SA: " + svingeAkselerasjon, 0,4);
 			lcd.drawString("MH: " + motorHastighet, 0,5);
 
 			// Oppdater frekvens
