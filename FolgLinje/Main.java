@@ -36,8 +36,8 @@ class main {
 
 		//INIT
 		//Variabler
-		final double lightFloorS1 = 0.47;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
-		final double colorFloorS4 = 0.05; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double lightFloorS1 = 0.43;	//0.50			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
+		final double colorFloorS4 = 0.04; //0.15			// Hvor lav RGB verdi maa bakken vaere for at det skal gjenkjennes som svart.
 		float backwardSpeed = 450;
 
 		Brick brick = BrickFinder.getDefault();
@@ -62,6 +62,10 @@ class main {
 		int multiplier = 1;
 		boolean svart = false;
 		int tellerPluss = 1;
+		int rebound = 2;
+
+		Motor.C.backward();
+		Motor.D.backward();
 
 		while(cont) {
 			buttons = Button.readButtons();
@@ -76,32 +80,32 @@ class main {
 			} else if (Integer.toString(buttons).equals("16")) {
 				tellerPluss -= 1;
 			}
-			lcd.drawString("Speed: " + backwardSpeed, 0, 1);
-			lcd.drawString("Teller plus: " + tellerPluss, 0, 2);
-			lcd.drawString("Colorfloor: " + fargeSampleS4[0], 0, 3);
-			lcd.drawString("Lightfloor: " + lysSampleS1[0], 0, 4);
-
 			Motor.C.setSpeed(backwardSpeed + turnDelta * multiplier);
 			Motor.D.setSpeed(backwardSpeed - turnDelta * multiplier);
 			Motor.C.backward();
 			Motor.D.backward();
+
+			lcd.drawString("Speed: " + backwardSpeed, 0, 1);
+			lcd.drawString("Teller plus: " + tellerPluss, 0, 2);
+			lcd.drawString("Colorfloor: " + fargeSampleS4[0], 0, 3);
+			lcd.drawString("Lightfloor: " + lysSampleS1[0], 0, 4);
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);
 			lysLeserS1.fetchSample(lysSampleS1, 0);
 			if(fargeSampleS4[0] < colorFloorS4) {
-				multiplier = 1 + teller;
-				teller += 1;
+				turnDelta += teller;
+				teller += tellerPluss;
+				multiplier = 1;
 			}
 			if(lysSampleS1[0] < lightFloorS1) {
-				multiplier = -1 - teller*teller;
+				turnDelta += teller;
 				teller += tellerPluss;
+				multiplier = -1;
 			}
 			if(fargeSampleS4[0] > colorFloorS4 && lysSampleS1[0] > lightFloorS1) {
 				teller = 0;
-				if(multiplier < 0) {
-					multiplier = -1;
-				} else {
-					multiplier = 1;
-				}
+				turnDelta = 1;
+				Motor.C.setSpeed(backwardSpeed * (-multiplier));
+				Motor.D.setSpeed(backwardSpeed * multiplier);
 			}
 		}
 		lysSensorS1.close();	//Maa inkluderes saa sensorporter lukkes etter hver programkjoering.
