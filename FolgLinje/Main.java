@@ -61,7 +61,7 @@ class main {
 		int teller = 0;
 		int multiplier = 1;
 		boolean svart = false;
-		int tellerPluss = 20;
+		int tellerPluss = 1;
 
 		while(cont) {
 			buttons = Button.readButtons();
@@ -88,12 +88,14 @@ class main {
 			fargeLeserS4.fetchSample(fargeSampleS4, 0);
 			lysLeserS1.fetchSample(lysSampleS1, 0);
 			if(fargeSampleS4[0] < colorFloorS4) {
-				multiplier = 12 + teller;
-				teller += 3;
-			} else if(lysSampleS1[0] < lightFloorS1) {
-				multiplier = -12 - teller;
+				multiplier = 1 + teller;
+				teller += 1;
+			}
+			if(lysSampleS1[0] < lightFloorS1) {
+				multiplier = -1 - teller*teller;
 				teller += tellerPluss;
-			} else {
+			}
+			if(fargeSampleS4[0] > colorFloorS4 && lysSampleS1[0] > lightFloorS1) {
 				teller = 0;
 				if(multiplier < 0) {
 					multiplier = -1;
