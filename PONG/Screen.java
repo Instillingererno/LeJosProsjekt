@@ -20,8 +20,14 @@ class Screen {
 
 // --- Metoder ---
     public drawString(String input, int lineNr) {
-        this.lcd.drawString(input, padding, current * lineHeight + padding);
-        this.currentLine++;
+        if(lineNr == null) {
+            this.lcd.drawString(input, this.padding, this.currentLine * this.lineHeight + this.padding);
+            this.currentLine++;
+        } else {
+            this.lcd.drawString(input, this.padding, linenr * this.lineHeight + this.padding);
+        }
+
+
     }
 
     public clearScreen() {
