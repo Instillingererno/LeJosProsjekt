@@ -1,4 +1,9 @@
 //Klasse for aa haandtere input fra bruker paa ev3 maskinen
+
+// --- Imports ---
+import lejos.hardware.Button;
+
+
 class Input extends Thread{
     public run() {
         boolean cont = true;

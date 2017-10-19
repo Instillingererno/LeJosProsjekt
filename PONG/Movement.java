@@ -11,20 +11,20 @@ public Enums MotorStates {
 }
 
 // --- Imports ---
-package lejos;
+import lejos.hardware.motor.*;
 
 
 class Movement {
 // --- Attributer ---
     double xPos = 0; //Bruke rotasjon fra nullpunkt som x,y posisjon?
     double yPos = 0;
-    int speed = 0;
-    boolean motorLock = true;
+    int speed = 100;
+    int resetSpeed = 50;
 
 // --- Metoder ---
     public void gotoNull() { //Kjorer roboten til nullpunktet i et hjorne
-        Motor.B.setSpeed(speed);
-        Motor.A.setSpeed(speed);
+        Motor.B.setSpeed(resetSpeed);
+        Motor.A.setSpeed(resetSpeed);
         Motor.B.backward();
         Motor.A.backward();
         Delay.msDelay(1500);
