@@ -1,16 +1,58 @@
+// --- Kommentarer ---
+// Bruk port A og B til motorene
+//
+//
+//
+// -------------------
+
+// --- Enums ---
+public Enums MotorStates {
+    FLOAT, STOP;
+}
+
+// --- Imports ---
+package lejos;
+
 
 class Movement {
 // --- Attributer ---
     double xPos = 0; //Bruke rotasjon fra nullpunkt som x,y posisjon?
     double yPos = 0;
     int speed = 0;
+    boolean motorLock = true;
 
 // --- Metoder ---
-    public gotoNull() { //Kjorer roboten til nullpunktet i et hjorne
-
+    public void gotoNull() { //Kjorer roboten til nullpunktet i et hjorne
+        Motor.B.setSpeed(speed);
+        Motor.A.setSpeed(speed);
+        Motor.B.backward();
+        Motor.A.backward();
+        Delay.msDelay(1500);
+        this.motorStop(MotorState.STOP);
     }
+
+    public void goto(double degreeX, double degreeY) {
+        xPos += degreeX;
+        yPos += degreeY;
+        Motor.B.rotate(degreeX);
+        Motor.A.rotate(degreeY);
+    }
+
     public void setSpeed(int newSpeed) {
         this.speed = newSpeed;
+    }
+
+    public void motorStop(MotorState input) {
+        switch(input) {
+            case FLOAT:
+                Motor.A.flt();
+                Motor.B.flt();
+                break;
+            case STOP:
+                Motor.A.stop();
+                Motor.B.stop();
+                break;
+        }
     }
 
     public int getXPos() {
