@@ -26,8 +26,6 @@ class Screen {
         } else {
             this.lcd.drawString(input, this.padding, linenr * this.lineHeight + this.padding);
         }
-
-
     }
 
     public clearScreen() {
