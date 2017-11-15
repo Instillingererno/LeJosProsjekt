@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BluToothTest.iml" filepath="$PROJECT_DIR$/BluToothTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TilEV3/TilEV3.iml" filepath="$PROJECT_DIR$/TilEV3/TilEV3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TilPC/TilPC.iml" filepath="$PROJECT_DIR$/TilPC/TilPC.iml" />
+    </modules>
+  </component>
+</project>
