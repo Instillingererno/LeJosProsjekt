@@ -32,14 +32,14 @@ class Movement {
     }
 
     public void goto(double degreeX, double degreeY) {
-        xPos += degreeX;
+        xPos += degreeX; // <-- What the fuck, Sveinung? Adde en vinkel til en posisjon?
         yPos += degreeY;
         Motor.B.rotate(degreeX);
         Motor.A.rotate(degreeY);
     }
 
     public void setSpeed(int newSpeed) {
-        this.speed = newSpeed;
+        speed = newSpeed;
     }
 
     public void motorStop(MotorState input) {
