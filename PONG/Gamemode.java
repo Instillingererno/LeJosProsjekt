@@ -1,4 +1,3 @@
-
 class Gamemode {
 // --- Attributer ---
     public final int TOURNAMENT = 0;
@@ -6,6 +5,6 @@ class Gamemode {
 
 // --- Metoder ---
     public createGame(int gamemode) {
-        
+
     }
 }
