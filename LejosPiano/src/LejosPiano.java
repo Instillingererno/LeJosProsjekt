@@ -1,9 +1,14 @@
-import lejos.hardware.ev3.EV3;
+package Øving15;
 
-import javax.swing.*;
+import lejos.hardware.BrickFinder;
+import lejos.hardware.ev3.EV3;
+import lejos.hardware.lcd.LCD;
+import lejos.hardware.lcd.TextLCD;
 
 public class LejosPiano {
     public static void main(String[] args) {
+        EV3 ev3 = (EV3) BrickFinder.getLocal();
+        TextLCD LCD = ev3.getTextLCD();
         demThreads thread1 = new demThreads("Thread 1");
         demThreads thread2 = new demThreads("Thread 2");
         thread1.start();
@@ -17,25 +22,25 @@ class demThreads extends Thread {
 
     public demThreads(String name) {
         this.name = name;
-        System.out.println("Creating " + name);
+        LCD.drawString("Creating " + name, 50, 50, false);
     }
 
     public void run () {
-        System.out.println ("Running" + name);
+        LCD.drawString ("Running" + name, 50, 50, false);
         try {
             for (int i = 0; i < 4; i++) {
-                System.out.println("Thread" + name + ", " + i);
+                LCD.drawString("Thread" + name + ", " + i, 50, 50, false);
                 Thread.sleep(100);
             }
         }
         catch (InterruptedException e) {
-            System.out.println ("Thread" + name + " is interrupted.");
+            LCD.drawString ("Thread" + name + " is interrupted.", 50, 50, false);
         }
-        System.out.println ("Thread" + name + " is exiting.");
+        LCD.drawString ("Thread" + name + " is exiting.", 50, 50, false);
     }
 
     public void start() {
-        System.out.println("Starting" + name);
+        LCD.drawString("Starting" + name, 50, 50, false);
         if (thread == null) {
             thread = new Thread(this, name);
             thread.start();
