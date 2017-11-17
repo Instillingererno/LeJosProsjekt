@@ -3,6 +3,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 
 import lejos.hardware.BrickFinder;
 import lejos.hardware.ev3.EV3;
@@ -28,10 +29,16 @@ public class Server {
         }
         while(true) {
             try{
-                String input = in.readUTF();
-                //int input = in.readInt();
-                lcd.drawString(input, 0, 1);
+                out.writeUTF("A.wav");
 
+                TimeUnit.SECONDS.sleep(5);
+
+                out.writeUTF("C.wav");
+
+                System.exit(0);
+
+
+                //int input = in.readInt();
             } catch(Exception e) {
                 lcd.drawString(e.toString(), 0, 1);
             }

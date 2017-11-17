@@ -1,3 +1,6 @@
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,6 +12,7 @@ public class Pc {
         Socket MyClient;
         DataInputStream in = null;
         DataOutputStream out = null;
+
         try {
             System.out.println("Prøver tilkobling");
             MyClient = new Socket("10.0.1.1", 1111);
@@ -20,7 +24,25 @@ public class Pc {
             System.out.println(e);
         }
         while(true) {
-            out.writeUTF(JOptionPane.showInputDialog("Hva vil du skrive ut: "));
+            String input = in.readUTF();
+            playSound(input);
         }
+    }
+    public static synchronized void playSound(final String url) {
+        new Thread(new Runnable() {
+            // The wrapper thread is unnecessary, unless it blocks on the
+            // Clip finishing; see comments.
+            public void run() {
+                try {
+                    Clip clip = AudioSystem.getClip();
+                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+                            Pc.class.getResourceAsStream(url));
+                    clip.open(inputStream);
+                    clip.start();
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }).start();
     }
 }
