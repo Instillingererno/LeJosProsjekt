@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="JMusic">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../JavaDependencies/JMusic" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/MidiTest/lib/inst" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/../../JavaDependencies/JMusic" recursive="false" />
+  </library>
+</component>

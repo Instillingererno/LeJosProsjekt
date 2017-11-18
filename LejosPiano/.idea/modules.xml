@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LejosPiano.iml" filepath="$PROJECT_DIR$/LejosPiano.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MidiTest/MidiTest.iml" filepath="$PROJECT_DIR$/MidiTest/MidiTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/server/src.iml" filepath="$PROJECT_DIR$/server/src.iml" />
     </modules>
   </component>
