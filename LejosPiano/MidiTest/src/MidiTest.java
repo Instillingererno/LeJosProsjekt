@@ -24,7 +24,7 @@ public class MidiTest {
         String current = new java.io.File( "." ).getCanonicalPath();
         System.out.println("Current dir:"+current);
 
-        //PlayMidiFromFile.run("MidiTest/src/futurama.mid");
+        PlayMidiFromFile.run("MidiTest/src/beethoven.mid");
 
         KeyListener keys = new KeyListener() {
             @Override

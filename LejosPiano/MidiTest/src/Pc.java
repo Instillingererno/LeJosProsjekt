@@ -19,30 +19,12 @@ public class Pc {
             System.out.println("Vellykket");
             in = new DataInputStream(MyClient.getInputStream());
             out = new DataOutputStream((MyClient.getOutputStream()));
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e);
         }
-        while(true) {
-            String input = in.readUTF();
-            playSound(input);
+        while (true) {
+            int input = in.readInt();
+            //playsound
         }
-    }
-    public static synchronized void playSound(final String url) {
-        new Thread(new Runnable() {
-            // The wrapper thread is unnecessary, unless it blocks on the
-            // Clip finishing; see comments.
-            public void run() {
-                try {
-                    Clip clip = AudioSystem.getClip();
-                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-                            Pc.class.getResourceAsStream(url));
-                    clip.open(inputStream);
-                    clip.start();
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }).start();
     }
 }

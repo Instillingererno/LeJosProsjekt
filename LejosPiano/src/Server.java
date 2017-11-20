@@ -10,7 +10,7 @@ public class Server {
     private ServerSocket serv = null;
     private Socket s = null;
     private DataInputStream in = null;
-    private DataOutputStream out = null;
+    public DataOutputStream out = null;
     private EV3 ev3 = (EV3) BrickFinder.getLocal();
     private TextLCD lcd = ev3.getTextLCD();
 
