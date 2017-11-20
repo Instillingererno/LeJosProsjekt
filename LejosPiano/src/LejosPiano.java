@@ -12,7 +12,6 @@ import lejos.hardware.sensor.NXTTouchSensor;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-
 enum Type {
     NXT, EV3
 }
