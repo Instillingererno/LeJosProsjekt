@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Random;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
@@ -16,50 +15,45 @@ import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
 
 public class PianoHero extends GLCanvas implements GLEventListener {
+    private final float[][] COLORS = {
+            {0,1,0},
+            {1,0,0},
+            {1,1,0},
+            {0,0,1}
+    };
+
     private static final String title = "PianoHero";
     private static final int CANVAS_WIDTH = 1300;
     private static final int CANVAS_HEIGHT = 800;
-    private float rotAngle = 30f;
-    private float movementY = 0.1f;
     private static int score = 0;
     private float grense = 8f;
-    private float t = 0f;
 
-    private static boolean[] pressed = {false,false,false,false};
+    SpillObj[] spillObjs;
 
     private GLU glu;
     private static FPSAnimator anim;
-    private static GL2 gl;
-    private NewDraw draw, draw2, draw3, draw4;
+    private GL2 gl;
     private TextRenderer renderer;
-    private Random random;
 
     public PianoHero() {
         this.addGLEventListener(this);
     }
 
     public void init(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
+        gl = drawable.getGL().getGL2();
         glu = new GLU();
         gl.glClearColor(0.0f, 0.f, 0.0f, 0.0f);
         gl.glEnable(GL2.GL_DEPTH_TEST);
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
         gl.glShadeModel(GL2.GL_SMOOTH);
-
-        gl.glLoadIdentity();
-        gl.glTranslatef(0f, 0f, -20f);
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        draw = new NewDraw(gl, -5f, 8.5f);
-        draw2 = new NewDraw(gl, -1.5f, 8.5f);
-        draw3 = new NewDraw(gl, 2f, 10f);
-        draw4 = new NewDraw(gl, 5.5f, 12f);
-        random = new Random();
         renderer = new TextRenderer(new Font("Sans Serif", Font.BOLD, 36));
-        gl.glTranslatef(0f, 0f, 20f);
+
+        spillObjs = new SpillObj[] {new SpillObj(gl, -5, 6, COLORS[0]),
+                                    new SpillObj(gl, -1.5, 6, COLORS[1])};
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        GL2 gl = drawable.getGL().getGL2();
+        gl = drawable.getGL().getGL2();
         if (height == 0) height = 1;
         float aspect = (float) width / (float) height;
 
@@ -72,48 +66,55 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public void display(GLAutoDrawable drawable) {
-        GL2 gl = drawable.getGL().getGL2();
+        gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_DEPTH_BUFFER_BIT | GL2.GL_COLOR_BUFFER_BIT);
         gl.glLoadIdentity();
         gl.glTranslatef(0f, 0f, -20f);
 
         // "Flyplass" eller det området der akkordene skal være når man trykker
         gl.glColor3f(0.36f, 1f, 0.36f);
-        draw.drawSquare(-5, -5.8f, 3, 1.8f);
+        drawSquare(-5, -5.8f, 3, 1.8f);
         gl.glColor3f(1, 0.36f, 0.36f);
-        draw.drawSquare(-1.5f, -5.8f, 3, 1.8f);
+        drawSquare(-1.5f, -5.8f, 3, 1.8f);
         gl.glColor3f(1.0f, 0.99f, 0.4f);
-        draw.drawSquare(2f, -5.8f, 3, 1.8f);
+        drawSquare(2f, -5.8f, 3, 1.8f);
         gl.glColor3f(0.45f, 0.45f, 1.0f);
-        draw.drawSquare(5.5f, -5.8f, 3, 1.8f);
+        drawSquare(5.5f, -5.8f, 3, 1.8f);
 
         // "Strengene" som notene går nedover. Farge: GUL
         gl.glColor3f(1.0f, 1.0f, 1.0f);
-        draw.drawSquare(-5f, 5f, 1.35f, 20f);
-        draw.drawSquare(-1.5f, 5f, 1.35f, 20f);
-        draw.drawSquare(2f, 5f, 1.35f, 20f);
-        draw.drawSquare(5.5f, 5f, 1.35f, 20f);
+        drawSquare(-5f, 5f, 1.35f, 20f);
+        drawSquare(-1.5f, 5f, 1.35f, 20f);
+        drawSquare(2f, 5f, 1.35f, 20f);
+        drawSquare(5.5f, 5f, 1.35f, 20f);
 
         gl.glColor3f(1f, 0.0f, 0.8f);
-        draw.drawSquare(0f, 0f, 15f, 20f);
+        drawSquare(0f, 0f, 15f, 20f);
 
         gl.glColor3f(1.0f, 0.0f, 0.0f); //Background Color: RED
-        draw.drawSquare(0f, 0f, 22f, 20f);
+        drawSquare(0f, 0f, 22f, 20f);
 
         renderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
         renderer.setColor(1.0f, 1.0f, 0.0f, 1.0f);
         renderer.draw("Score: " + score, 20, 650);
         renderer.endRendering();
-
-        t += 0.02f;
-        System.out.println ("Tid: " + t);
     }
 
+    private void drawSquare(float x, float y, float width, float height) {
+        width /= 2;
+        height /= 2;
 
+        gl.glPushMatrix();
+        gl.glTranslatef(x, y, 0f);
 
-    public float getRandomNumber() {
-        float rng = ((random.nextFloat() + 0.5f) * 10) + 4f;
-        return rng;
+        gl.glBegin(GL2.GL_QUADS);
+        gl.glVertex3f(-width, height, 0f);
+        gl.glVertex3f(width, height, 0f);
+        gl.glVertex3f(width, -height, 0f);
+        gl.glVertex3f(-width, -height, 0f);
+        gl.glEnd();
+        gl.glPopMatrix();
+
     }
 
     public void dispose(GLAutoDrawable drawable) {
@@ -122,7 +123,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     public static void main(String[] args) {
         GLCanvas canvas = new PianoHero();
         canvas.setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        anim = new FPSAnimator(canvas, 60, true);
+        anim = new FPSAnimator(canvas, 60);
         anim.start();
 
         final JFrame frame = new JFrame();
@@ -137,28 +138,20 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             while(true) {
                 switch (client.getInt()) {
                     case 1:
-                        pressed[0] = true;
                         break;
                     case 2:
-                        pressed[0] = false;
                         break;
                     case 3:
-                        pressed[1] = true;
                         break;
                     case 4:
-                        pressed[1] = false;
                         break;
                     case 5:
-                        pressed[2] = true;
                         break;
                     case 6:
-                        pressed[2] = false;
                         break;
                     case 7:
-                        pressed[3] = true;
                         break;
                     case 8:
-                        pressed[3] = false;
                         break;
                 }
             }
