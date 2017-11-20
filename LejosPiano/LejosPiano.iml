@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="leJOS EV3" level="application" />
+    <orderEntry type="library" name="JFugue" level="application" />
   </component>
 </module>
