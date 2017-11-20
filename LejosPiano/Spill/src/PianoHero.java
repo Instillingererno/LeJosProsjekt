@@ -77,25 +77,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glLoadIdentity();
         gl.glTranslatef(0f, 0f, -20f);
 
-        float width = 3, height = 2;
-        gl.glColor3f(0f, 1f, 0f);
-        draw.drawSquare(-5f, draw.getY(), width, height);
-        draw.setYPos(draw.getY() - movementY);
-        gl.glColor3f(1.0f, 0.0f, 0.0f);
-        draw2.drawSquare(-1.5f, draw2.getY(), width, height );
-        draw2.setYPos(draw2.getY() - movementY);
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
-        draw3.drawSquare(2f, draw3.getY(), width, height);
-        draw3.setYPos(draw3.getY() - movementY);
-        gl.glColor3f(0f, 0f, 1.0f);
-        draw4.drawSquare(5.5f, draw4.getY(), width, height);
-        draw4.setYPos(draw4.getY() - movementY);
-
-
-        checkHit();
-        pressingOutside();
-        checkBottom();
-
         // "Flyplass" eller det området der akkordene skal være når man trykker
         gl.glColor3f(0.36f, 1f, 0.36f);
         draw.drawSquare(-5, -5.8f, 3, 1.8f);
@@ -128,89 +109,11 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         System.out.println ("Tid: " + t);
     }
 
-    private void checkBottom() {
-        if (draw.getY() <= -grense) {
-            draw.setYPos(getRandomNumber());
-            score -= 10;
-        } else if (draw2.getY() <= -grense) {
-            draw2.setYPos(getRandomNumber());
-            score -= 10;
-        } else if (draw3.getY() <= -grense) {
-            draw3.setYPos(getRandomNumber());
-            score -= 10;
-        } else if (draw4.getY() <= -grense) {
-            draw4.setYPos(getRandomNumber());
-            score -= 10;
-        }
-    }
 
-    private boolean checkWithin1() {
-        if (draw.getY() > -grense && draw.getY() < (-grense + 5)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkWithin2() {
-        if (draw2.getY() > -grense && draw2.getY() < (-grense + 5)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkWithin3() {
-        if (draw3.getY() > -grense && draw3.getY() < (-grense + 5)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkWithin4() {
-        if (draw4.getY() > -grense && draw4.getY() < (-grense + 5)) {
-            return true;
-        }
-        return false;
-    }
-
-    public void checkHit() {
-        if (pressed[0] && checkWithin1() == true) {
-            draw.setYPos(getRandomNumber());
-            score += 10;
-        } else if (pressed[1] && checkWithin2() == true) {
-            draw2.setYPos(getRandomNumber());
-            score += 10;
-        } else if (pressed[2] && checkWithin3() == true) {
-            draw3.setYPos(getRandomNumber());
-            score += 10;
-        } else if (pressed[3] && checkWithin4() == true) {
-            draw4.setYPos(getRandomNumber());
-            score += 10;
-        }
-    }
-
-    public boolean pressingOutside() {
-        if (checkWithin1() == false && pressed[0] && (t % 2) < 0.3f) {
-            return true;
-        }
-        else if (checkWithin2() == false && pressed[1] && (t % 2) < 0.3f) {
-            return true;
-        }
-        else if (checkWithin3() == false && pressed[2] && (t % 2) < 0.3f) {
-            return true;
-        }
-        else if (checkWithin4() == false && pressed[3] && (t % 2) < 0.3f) {
-            return true;
-        }
-        return false;
-    }
 
     public float getRandomNumber() {
         float rng = ((random.nextFloat() + 0.5f) * 10) + 4f;
         return rng;
-    }
-
-    public static void setScore(int addScore) {
-        score += addScore;
     }
 
     public void dispose(GLAutoDrawable drawable) {
@@ -235,48 +138,24 @@ public class PianoHero extends GLCanvas implements GLEventListener {
                 switch (client.getInt()) {
                     case 1:
                         pressed[0] = true;
-                        if (pressingOutside()) {
-                            setScore (-10f);
-                        }
-                        else {
-                            setScore (10);
-                        }
                         break;
                     case 2:
                         pressed[0] = false;
                         break;
                     case 3:
                         pressed[1] = true;
-                        if (pressingOutside()) {
-                            setScore (-10f);
-                        }
-                        else {
-                            setScore (10);
-                        }
                         break;
                     case 4:
                         pressed[1] = false;
                         break;
                     case 5:
                         pressed[2] = true;
-                        if (pressingOutside()) {
-                            setScore (-10f);
-                        }
-                        else {
-                            setScore (10);
-                        }
                         break;
                     case 6:
                         pressed[2] = false;
                         break;
                     case 7:
                         pressed[3] = true;
-                        if (pressingOutside()) {
-                            setScore (-10f);
-                        }
-                        else {
-                            setScore (10);
-                        }
                         break;
                     case 8:
                         pressed[3] = false;
