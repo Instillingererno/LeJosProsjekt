@@ -1,14 +1,17 @@
 import com.jogamp.opengl.GL2;
 
 public class NewDraw {
-    private float x, y, z;
+    private float x, y;
     private float boxRot = 0f;
     private int direction = 1;
     GL2 gl;
     private float limit = 150f;
 
-    public NewDraw(GL2 gl) {
+    public NewDraw(GL2 gl, float x, float y) {
         this.gl = gl;
+        this.x = x;
+        this.y = y;
+        drawPoint(x, y, 100);
     }
 
     public void drawSquare (float x, float y, float width, float height) {
@@ -28,7 +31,7 @@ public class NewDraw {
         gl.glTranslatef(0f, 0f, -20f);
     }
 
-    public void drawPoint(float x, float y, float size){
+   public void drawPoint(float x, float y, float size){
         gl.glTranslatef(x, y, 0f);
 
         gl.glPointSize (size);
@@ -40,4 +43,20 @@ public class NewDraw {
         gl.glLoadIdentity();
         gl.glTranslatef(0f, 0f, -20f);
     }
+
+   public void setYPos(float newY) {
+       y = newY;
+   }
+
+   public void setXPos(float newX) {
+       x = newX;
+   }
+
+   public float getX() {
+       return x;
+   }
+
+   public float getY() {
+       return y;
+   }
 }
