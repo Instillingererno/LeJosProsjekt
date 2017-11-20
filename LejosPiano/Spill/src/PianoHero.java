@@ -187,7 +187,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public void pressingOutside() {
-        if (checkWithin1() == false && pressed[0] && t > 2) {
+        if (checkWithin1() == false && pressed[0]) {
             score -= 10;
         }
         else if (checkWithin2() == false && pressed[1]) {
