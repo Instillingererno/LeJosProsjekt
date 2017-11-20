@@ -192,13 +192,13 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         if (checkWithin1() == false && pressed[0] && (t % 2) < 1) {
             score -= 10;
         }
-        else if (checkWithin2() == false && pressed[1]) {
+        else if (checkWithin2() == false && pressed[1] && (t % 2) < 1) {
             score -= 10;
         }
-        else if (checkWithin3() == false && pressed[2]) {
+        else if (checkWithin3() == false && pressed[2] && (t % 2) < 1) {
             score -= 10;
         }
-        else if (checkWithin4() == false && pressed[3]) {
+        else if (checkWithin4() == false && pressed[3] && (t % 2) < 1) {
             score -= 10;
         }
     }
