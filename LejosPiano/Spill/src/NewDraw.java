@@ -11,7 +11,7 @@ public class NewDraw {
         this.gl = gl;
         this.x = x;
         this.y = y;
-        drawPoint(x, y, 100);
+        drawSquare(x, y, 3,2);
     }
 
     public void drawSquare (float x, float y, float width, float height) {

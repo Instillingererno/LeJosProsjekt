@@ -1,10 +1,11 @@
+import lejos.hardware.BrickFinder;
+import lejos.hardware.ev3.EV3;
+import lejos.hardware.lcd.TextLCD;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import lejos.hardware.BrickFinder;
-import lejos.hardware.ev3.EV3;
-import lejos.hardware.lcd.TextLCD;
 
 public class Server {
     private ServerSocket serv = null;
@@ -15,10 +16,6 @@ public class Server {
     private TextLCD lcd = ev3.getTextLCD();
 
     public Server() {}
-    public boolean isConnected() {
-        lcd.drawString(Boolean.toString(s.isConnected()),0,5);
-        return s.isConnected();
-    }
     public void connect() {
         try {
             serv = new ServerSocket(1111);

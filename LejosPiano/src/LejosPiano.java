@@ -26,51 +26,57 @@ public class LejosPiano {
         TrykkSensor s3 = new TrykkSensor(Type.EV3, SensorPort.S3);
         TrykkSensor s4 = new TrykkSensor(Type.NXT, SensorPort.S4);
 
-        Button.UP.addButtonListener();
-
-        Server host = new Server();
-        host.connect();
-
-        LCD.clear();
+        //Button.UP.addButtonListener();
         while(!Button.ESCAPE.isDown()) {
-            //PRESSED
-            if(s1.isPressed()) {
-                host.out.writeInt(1);
-                LCD.clear(1);
-                LCD.drawString("S1: Pressed" + "  " + s1.getSample(),0,1);
-            }
-            if(s2.isPressed()) {
-                host.out.writeInt(3);
-                LCD.clear(2);
-                LCD.drawString("S2: Pressed" + "  " + s2.getSample(),0,2);
-            }
-            if(s3.isPressed()) {
-                host.out.writeInt(5);
-                LCD.clear(3);
-                LCD.drawString("S3: Pressed" + "  " + s3.getSample(),0,3);
-            }
-            if(s4.isPressed()) {
-                host.out.writeInt(7);
-                LCD.clear(4);
-                LCD.drawString("S4: Pressed" + "  " + s4.getSample(),0,4);
-            }
+            Server host = new Server();
+            host.connect();
 
-            //RELEASED
-            if(s1.isReleased()) {
-                host.out.writeInt(2);
-                LCD.drawString("S1: Released" + " " + s1.getSample(),0,1);
-            }
-            if(s2.isReleased()) {
-                host.out.writeInt(4);
-                LCD.drawString("S2: Released" + " " + s2.getSample(),0,2);
-            }
-            if(s3.isReleased()) {
-                host.out.writeInt(6);
-                LCD.drawString("S3: Released" + " " + s3.getSample(),0,3);
-            }
-            if(s4.isReleased()) {
-                host.out.writeInt(8);
-                LCD.drawString("S4: Released" + " " + s4.getSample(),0,4);
+            LCD.clear();
+            while(!Button.ESCAPE.isDown() && host.isConnected()) {
+                try {
+                    //PRESSED
+                    if(s1.isPressed()) {
+                        host.out.writeInt(1);
+                        LCD.clear(1);
+                        LCD.drawString("S1: Pressed" + "  " + s1.getSample(),0,1);
+                    }
+                    if(s2.isPressed()) {
+                        host.out.writeInt(3);
+                        LCD.clear(2);
+                        LCD.drawString("S2: Pressed" + "  " + s2.getSample(),0,2);
+                    }
+                    if(s3.isPressed()) {
+                        host.out.writeInt(5);
+                        LCD.clear(3);
+                        LCD.drawString("S3: Pressed" + "  " + s3.getSample(),0,3);
+                    }
+                    if(s4.isPressed()) {
+                        host.out.writeInt(7);
+                        LCD.clear(4);
+                        LCD.drawString("S4: Pressed" + "  " + s4.getSample(),0,4);
+                    }
+
+                    //RELEASED
+                    if(s1.isReleased()) {
+                        host.out.writeInt(2);
+                        LCD.drawString("S1: Released" + " " + s1.getSample(),0,1);
+                    }
+                    if(s2.isReleased()) {
+                        host.out.writeInt(4);
+                        LCD.drawString("S2: Released" + " " + s2.getSample(),0,2);
+                    }
+                    if(s3.isReleased()) {
+                        host.out.writeInt(6);
+                        LCD.drawString("S3: Released" + " " + s3.getSample(),0,3);
+                    }
+                    if(s4.isReleased()) {
+                        host.out.writeInt(8);
+                        LCD.drawString("S4: Released" + " " + s4.getSample(),0,4);
+                    }
+                } catch(Exception e) {
+                    LCD.clear();
+                    LCD.drawString("Tilkobling mistet, prøver på ny",0,1);
+                }
             }
         }
     }

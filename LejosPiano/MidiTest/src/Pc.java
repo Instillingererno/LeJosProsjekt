@@ -9,21 +9,25 @@ import java.net.Socket;
 
 public class Pc {
     public static void main(String[] args) throws IOException, MidiUnavailableException {
-        Socket MyClient;
+        Socket MyClient = null;
         DataInputStream in = null;
         DataOutputStream out = null;
         Chord[] chords = {new Chord("E"), new Chord("B"), new Chord("C"), new Chord("A")};
         RealtimePlayer player = new RealtimePlayer();
 
-        try {
-            System.out.println("Prøver tilkobling");
-            MyClient = new Socket("10.0.1.1", 1111);
-            System.out.println("Vellykket");
-            in = new DataInputStream(MyClient.getInputStream());
-            out = new DataOutputStream((MyClient.getOutputStream()));
-        } catch (IOException e) {
-            System.out.println(e);
+        while(MyClient == null) {
+            try {
+                System.out.println("Prøver tilkobling");
+                MyClient = new Socket("10.0.1.1", 1111);
+                System.out.println("Vellykket");
+                in = new DataInputStream(MyClient.getInputStream());
+                out = new DataOutputStream((MyClient.getOutputStream()));
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         }
+
+        //Continue
         while (true) {
             int input = in.readInt();
             //playsound
