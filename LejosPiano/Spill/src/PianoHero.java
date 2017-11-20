@@ -186,24 +186,29 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         }
     }
 
-    public void pressingOutside() {
+    public boolean pressingOutside() {
         if (checkWithin1() == false && pressed[0]) {
-            score -= 10;
+            return true;
         }
         else if (checkWithin2() == false && pressed[1]) {
-            score -= 10;
+            return true;
         }
         else if (checkWithin3() == false && pressed[2]) {
-            score -= 10;
+            return true;
         }
         else if (checkWithin4() == false && pressed[3]) {
-            score -= 10;
+            return true;
         }
+        return false;
     }
 
     public float getRandomNumber() {
         float rng = ((random.nextFloat() + 0.5f) * 10) + 4f;
         return rng;
+    }
+
+    public void setScore(int addScore) {
+        score += addScore;
     }
 
     public void dispose(GLAutoDrawable drawable) {
@@ -228,24 +233,48 @@ public class PianoHero extends GLCanvas implements GLEventListener {
                 switch (client.getInt()) {
                     case 1:
                         pressed[0] = true;
+                        if (pressingOutside()) {
+                            setScore (10);
+                        }
+                        else {
+                            setScore (-10);
+                        }
                         break;
                     case 2:
                         pressed[0] = false;
                         break;
                     case 3:
                         pressed[1] = true;
+                        if (pressingOutside()) {
+                            setScore (10);
+                        }
+                        else {
+                            setScore (-10);
+                        }
                         break;
                     case 4:
                         pressed[1] = false;
                         break;
                     case 5:
                         pressed[2] = true;
+                        if (pressingOutside()) {
+                            setScore (10);
+                        }
+                        else {
+                            setScore (-10);
+                        }
                         break;
                     case 6:
                         pressed[2] = false;
                         break;
                     case 7:
                         pressed[3] = true;
+                        if (pressingOutside()) {
+                            setScore (10);
+                        }
+                        else {
+                            setScore (-10);
+                        }
                         break;
                     case 8:
                         pressed[3] = false;
