@@ -21,8 +21,9 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     private static final int CANVAS_HEIGHT = 800;
     private float rotAngle = 30f;
     private float movementY = 0.1f;
-    private int score = 0;
+    private static int score = 0;
     private float grense = 8f;
+    private float t = 0f;
 
     private static boolean[] pressed = {false,false,false,false};
 
@@ -123,6 +124,8 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         renderer.draw("Score: " + score, 20, 650);
         renderer.endRendering();
 
+        t += 0.02f;
+        System.out.println ("Tid: " + t);
     }
 
     private void checkBottom() {
@@ -143,7 +146,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
 
     private boolean checkWithin1() {
         if (draw.getY() > -grense && draw.getY() < (-grense + 5)) {
-            System.out.println("Stoff, it works!");
             return true;
         }
         return false;
@@ -186,20 +188,19 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         }
     }
 
-    public boolean pressingOutside() {
-        if (checkWithin1() == false && pressed[0]) {
-            return true;
+    public void pressingOutside() {
+        if (checkWithin1() == false && pressed[0] && (t % 2) < 1) {
+            score -= 10;
         }
         else if (checkWithin2() == false && pressed[1]) {
-            return true;
+            score -= 10;
         }
         else if (checkWithin3() == false && pressed[2]) {
-            return true;
+            score -= 10;
         }
         else if (checkWithin4() == false && pressed[3]) {
-            return true;
+            score -= 10;
         }
-        return false;
     }
 
     public float getRandomNumber() {
@@ -207,7 +208,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         return rng;
     }
 
-    public void setScore(int addScore) {
+    public static void setScore(int addScore) {
         score += addScore;
     }
 
@@ -233,48 +234,23 @@ public class PianoHero extends GLCanvas implements GLEventListener {
                 switch (client.getInt()) {
                     case 1:
                         pressed[0] = true;
-                        if (pressingOutside()) {
-                            setScore (10);
-                        }
-                        else {
-                            setScore (-10);
-                        }
                         break;
                     case 2:
                         pressed[0] = false;
                         break;
                     case 3:
-                        pressed[1] = true;
-                        if (pressingOutside()) {
-                            setScore (10);
-                        }
-                        else {
-                            setScore (-10);
-                        }
                         break;
                     case 4:
                         pressed[1] = false;
                         break;
                     case 5:
                         pressed[2] = true;
-                        if (pressingOutside()) {
-                            setScore (10);
-                        }
-                        else {
-                            setScore (-10);
-                        }
                         break;
                     case 6:
                         pressed[2] = false;
                         break;
                     case 7:
                         pressed[3] = true;
-                        if (pressingOutside()) {
-                            setScore (10);
-                        }
-                        else {
-                            setScore (-10);
-                        }
                         break;
                     case 8:
                         pressed[3] = false;
