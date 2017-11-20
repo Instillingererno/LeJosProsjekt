@@ -27,12 +27,12 @@ public class LejosPiano {
         TrykkSensor s4 = new TrykkSensor(Type.NXT, SensorPort.S4);
 
         //Button.UP.addButtonListener();
-        while(!Button.ESCAPE.isDown()) {
-            Server host = new Server();
-            host.connect();
 
+        Server host = new Server();
+        host.connect();
+        while(!Button.ESCAPE.isDown()) {
             LCD.clear();
-            while(!Button.ESCAPE.isDown() && host.isConnected()) {
+            while(!Button.ESCAPE.isDown()) {
                 try {
                     //PRESSED
                     if(s1.isPressed()) {
@@ -75,7 +75,9 @@ public class LejosPiano {
                     }
                 } catch(Exception e) {
                     LCD.clear();
-                    LCD.drawString("Tilkobling mistet, prøver på ny",0,1);
+                    LCD.drawString("Tilkobling mistet",0,1);
+                    LCD.drawString("Prøver på ny",0,2);
+                    host.accept();
                 }
             }
         }

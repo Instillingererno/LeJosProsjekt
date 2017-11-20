@@ -1,5 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOError;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import lejos.hardware.BrickFinder;
@@ -19,14 +21,17 @@ public class Server {
         lcd.drawString(Boolean.toString(s.isConnected()),0,5);
         return s.isConnected();
     }
+    public void accept() throws IOException {
+        s = serv.accept();
+        lcd.drawString("Tilkobling vellykket",0,1);
+        in = new DataInputStream(s.getInputStream());
+        out = new DataOutputStream(s.getOutputStream());
+    }
     public void connect() {
         try {
             serv = new ServerSocket(1111);
             lcd.drawString("Venter på tilkobling", 0, 1);
-            s = serv.accept();
-            lcd.drawString("Tilkobling vellykket",0,1);
-            in = new DataInputStream(s.getInputStream());
-            out = new DataOutputStream(s.getOutputStream());
+            accept();
         } catch(Exception e) {
             lcd.drawString(e.toString(), 0, 1);
         }
