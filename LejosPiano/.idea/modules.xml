@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LejosPiano.iml" filepath="$PROJECT_DIR$/LejosPiano.iml" />
       <module fileurl="file://$PROJECT_DIR$/MidiTest/MidiTest.iml" filepath="$PROJECT_DIR$/MidiTest/MidiTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Spill/Spill.iml" filepath="$PROJECT_DIR$/Spill/Spill.iml" />
     </modules>
   </component>
 </project>
