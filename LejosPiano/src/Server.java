@@ -1,11 +1,11 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOError;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.ev3.EV3;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.lcd.TextLCD;
 
 public class Server {
@@ -22,6 +22,8 @@ public class Server {
         return s.isConnected();
     }
     public void accept() throws IOException {
+        LCD.clear();
+        lcd.drawString("Venter på tilkobling", 0, 1);
         s = serv.accept();
         lcd.drawString("Tilkobling vellykket",0,1);
         in = new DataInputStream(s.getInputStream());
@@ -30,7 +32,6 @@ public class Server {
     public void connect() {
         try {
             serv = new ServerSocket(1111);
-            lcd.drawString("Venter på tilkobling", 0, 1);
             accept();
         } catch(Exception e) {
             lcd.drawString(e.toString(), 0, 1);
