@@ -22,7 +22,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     private float rotAngle = 30f;
     private float movementY = 0.1f;
     private int score = 0;
-    private float grense = 6.5f;
+    private float grense = 8f;
 
     private static boolean[] pressed = {false,false,false,false};
 
@@ -77,8 +77,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glTranslatef(0f, 0f, -20f);
 
         float width = 3, height = 2;
-        gl.glColor3f(1,0,1);
-        draw.drawPoint(-5f, draw.getY(), 100);
         gl.glColor3f(0f, 1f, 0f);
         draw.drawSquare(-5f, draw.getY(), width, height);
         draw.setYPos(draw.getY() - movementY);
@@ -91,21 +89,20 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glColor3f(0f, 0f, 1.0f);
         draw4.drawSquare(5.5f, draw4.getY(), width, height);
         draw4.setYPos(draw4.getY() - movementY);
-        draw.drawPoint(-6, (-grense + 2), 100);
-        draw.drawPoint(-6, -grense, 100);
 
 
         checkHit();
+        pressingOutside();
         checkBottom();
 
-        // "Flyplass"
-        gl.glColor3f(0f, 1f, 0f);
+        // "Flyplass" eller det området der akkordene skal være når man trykker
+        gl.glColor3f(0.36f, 1f, 0.36f);
         draw.drawSquare(-5, -5.8f, 3, 1.8f);
-        gl.glColor3f(1, 0, 0);
+        gl.glColor3f(1, 0.36f, 0.36f);
         draw.drawSquare(-1.5f, -5.8f, 3, 1.8f);
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
+        gl.glColor3f(1.0f, 0.99f, 0.4f);
         draw.drawSquare(2f, -5.8f, 3, 1.8f);
-        gl.glColor3f(0f, 0f, 1.0f);
+        gl.glColor3f(0.45f, 0.45f, 1.0f);
         draw.drawSquare(5.5f, -5.8f, 3, 1.8f);
 
         // "Strengene" som notene går nedover. Farge: GUL
@@ -115,7 +112,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         draw.drawSquare(2f, 5f, 1.35f, 20f);
         draw.drawSquare(5.5f, 5f, 1.35f, 20f);
 
-        gl.glColor3f(0.2f, 0.5f, 1.0f);
+        gl.glColor3f(1f, 0.0f, 0.8f);
         draw.drawSquare(0f, 0f, 15f, 20f);
 
         gl.glColor3f(1.0f, 0.0f, 0.0f); //Background Color: RED
@@ -145,7 +142,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     private boolean checkWithin1() {
-        if (draw.getY() > -grense && draw.getY() < (-grense + 2)) {
+        if (draw.getY() > -grense && draw.getY() < (-grense + 5)) {
             System.out.println("Stoff, it works!");
             return true;
         }
@@ -153,21 +150,21 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     private boolean checkWithin2() {
-        if (draw2.getY() > -grense && draw2.getY() < (-grense + 2)) {
+        if (draw2.getY() > -grense && draw2.getY() < (-grense + 5)) {
             return true;
         }
         return false;
     }
 
     private boolean checkWithin3() {
-        if (draw3.getY() > -grense && draw3.getY() < (-grense + 2)) {
+        if (draw3.getY() > -grense && draw3.getY() < (-grense + 5)) {
             return true;
         }
         return false;
     }
 
     private boolean checkWithin4() {
-        if (draw4.getY() > -grense && draw4.getY() < (-grense + 2)) {
+        if (draw4.getY() > -grense && draw4.getY() < (-grense + 5)) {
             return true;
         }
         return false;
@@ -186,6 +183,21 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         } else if (pressed[3] && checkWithin4() == true) {
             draw4.setYPos(getRandomNumber());
             score += 10;
+        }
+    }
+
+    public void pressingOutside() {
+        if (checkWithin1() == false && pressed[0]) {
+            score -= 10;
+        }
+        else if (checkWithin2() == false && pressed[1]) {
+            score -= 10;
+        }
+        else if (checkWithin3() == false && pressed[2]) {
+            score -= 10;
+        }
+        else if (checkWithin3() == false && pressed[3]) {
+            score -= 10;
         }
     }
 
