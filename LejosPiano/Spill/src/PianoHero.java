@@ -16,14 +16,17 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     private static final int CANVAS_WIDTH = 1500;
     private static final int CANVAS_HEIGHT = 1500;
     private float rotAngle = 30f;
-    private float movementY = 1f;
+    private float movementY = 0.1f;
     private int score = 0;
+    private float grense = 6.5f;
 
     private GLU glu;
     private static FPSAnimator anim;
     private static GL2 gl;
-    private NewDraw draw;
+    private NewDraw draw, draw2, draw3, draw4;
     private TextRenderer renderer;
+    private Random random;
+    private static Controller control;
 
     public PianoHero (){this.addGLEventListener(this);}
 
@@ -35,8 +38,18 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
         gl.glShadeModel(GL2.GL_SMOOTH);
 
-        draw = new NewDraw(gl);
+        gl.glLoadIdentity();
+        gl.glTranslatef(0f, 0f, -20f);
+        gl.glColor3f(1.0f,0.0f, 0.0f);
+        draw = new NewDraw(gl, -5f, 8.5f);
+        draw2 = new NewDraw(gl, -1.5f, 8.5f);
+        draw3 = new NewDraw(gl, 2f, 10f);
+        draw4 = new NewDraw(gl, 5.5f, 12f);
+        random = new Random();
+        control = new Controller();
+        this.addKeyListener(control);
         renderer = new TextRenderer(new Font ("Sans Serif", Font.BOLD, 36));
+        gl.glTranslatef(0f, 0f,20f);
     }
 
     public void reshape (GLAutoDrawable drawable, int x, int y, int width, int height) {
@@ -59,23 +72,34 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glTranslatef(0f, 0f, -20f);
 
 
-        gl.glColor3f(0f, 0f, 0f);
-        draw.drawPoint(-5f, 8.5f - movementY, 100f);
-        draw.drawPoint(-1.5f, 19f - movementY, 100f);
-        draw.drawPoint(2f, 39f - movementY, 100f);
-        draw.drawPoint(5.5f, 28.5f - movementY, 100f);
+        gl.glColor3f(0f, 1f, 0f);
+        draw.drawPoint(-5f, draw.getY(), 100f);
+        draw.setYPos(draw.getY() - movementY);
+        gl.glColor3f(1.0f, 0.0f, 0.0f);
+        draw2.drawPoint(-1.5f, draw2.getY(), 100f);
+        draw2.setYPos(draw2.getY() - movementY);
+        gl.glColor3f(1.0f, 1.0f, 0.0f);
+        draw3.drawPoint(2f, draw3.getY(), 100f);
+        draw3.setYPos(draw3.getY() - movementY);
+        gl.glColor3f(0f, 0f, 1.0f);
+        draw4.drawPoint(5.5f, draw4.getY(), 100f);
+        draw4.setYPos(draw4.getY() - movementY);
 
+        checkHit();
         checkBottom();
 
-        // "Flyplass" Farge: GRØNN
+        // "Flyplass"
         gl.glColor3f(0f, 1f, 0f);
         draw.drawSquare(-5, -5.8f, 3, 1.8f);
+        gl.glColor3f(1, 0, 0);
         draw.drawSquare(-1.5f, -5.8f, 3, 1.8f);
+        gl.glColor3f(1.0f, 1.0f, 0.0f);
         draw.drawSquare(2f, -5.8f, 3, 1.8f);
+        gl.glColor3f(0f, 0f, 1.0f);
         draw.drawSquare(5.5f, -5.8f, 3, 1.8f);
 
         // "Strengene" som notene går nedover. Farge: GUL
-        gl.glColor3f(1.0f, 1.0f, 0.0f);
+        gl.glColor3f(1.0f, 1.0f, 1.0f);
         draw.drawSquare(-5f, 5f,1.35f, 20f);
         draw.drawSquare(-1.5f, 5f,1.35f, 20f);
         draw.drawSquare(2f, 5f,1.35f, 20f);
@@ -92,14 +116,84 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         renderer.draw ("Score: " + score, 20, 650);
         renderer.endRendering();
 
-        movementY += 0.12f;
+        if (control.getHit1() == true) {
+            System.out.println ("It works! :D");
+        }
+        else {
+            System.out.println ("It doesnt work! D:");
+        }
     }
 
     private void checkBottom() {
-        if (movementY >= 14) {
-            movementY = 1f;
+        if (draw.getY() <= -grense) {
+            draw.setYPos(getRandomNumber());
             score -= 10;
         }
+        else if(draw2.getY() <= -grense) {
+            draw2.setYPos(getRandomNumber());
+            score -= 10;
+        }
+        else if (draw3.getY() <= -grense){
+            draw3.setYPos(getRandomNumber());
+            score -= 10;
+        }
+        else if (draw4.getY() <= -grense) {
+            draw4.setYPos(getRandomNumber());
+            score -= 10;
+        }
+    }
+
+    private boolean checkWithin1() {
+        if (draw.getY() > -grense && draw.getY() < (-grense + 2)) {
+            System.out.println ("Stoff, it works!");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkWithin2() {
+        if (draw2.getY() > -grense && draw2.getY() < (-grense + 2)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkWithin3() {
+        if (draw3.getY() > -grense && draw3.getY() < (-grense + 2)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkWithin4() {
+        if (draw4.getY() > -grense && draw4.getY() < (-grense + 2)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void checkHit() {
+        if (control.getHit1() == true && checkWithin1() == true) {
+            draw.setYPos(getRandomNumber());
+            score += 10;
+        }
+        else if (control.getHit2() == true && checkWithin2() == true) {
+            draw2.setYPos(getRandomNumber());
+            score += 10;
+        }
+        else if (control.getHit3() == true && checkWithin3() == true) {
+            draw3.setYPos(getRandomNumber());
+            score += 10;
+        }
+        else if (control.getHit4() == true && checkWithin4() == true) {
+            draw4.setYPos(getRandomNumber());
+            score += 10;
+        }
+    }
+
+    public float getRandomNumber() {
+        float rng = ((random.nextFloat() + 0.5f) * 10) + 4f;
+        return rng;
     }
 
     public void dispose (GLAutoDrawable drawable) {}
