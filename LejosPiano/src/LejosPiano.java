@@ -16,14 +16,13 @@ enum Type {
 }
 
 public class LejosPiano {
-
     public static void main(String[] args) throws IOException {
         EV3 ev3 = (EV3) BrickFinder.getLocal();
         TextLCD LCD = ev3.getTextLCD();
 
         TrykkSensor s1 = new TrykkSensor(Type.EV3, SensorPort.S1);
         TrykkSensor s2 = new TrykkSensor(Type.NXT, SensorPort.S2);
-        TrykkSensor s3 = new TrykkSensor(Type.EV3, SensorPort.S3);
+        TrykkSensor s3 = new TrykkSensor(Type.NXT, SensorPort.S3);
         TrykkSensor s4 = new TrykkSensor(Type.NXT, SensorPort.S4);
 
         //Button.UP.addButtonListener();
@@ -33,6 +32,7 @@ public class LejosPiano {
         while(!Button.ESCAPE.isDown()) {
             LCD.clear();
             while(!Button.ESCAPE.isDown()) {
+                vent();
                 try {
                     //PRESSED
                     if(s1.isPressed()) {
@@ -84,7 +84,7 @@ public class LejosPiano {
     }
     public static void vent() {
         try{
-            TimeUnit.SECONDS.sleep(5);
+            TimeUnit.MILLISECONDS.sleep(2);
         } catch(Exception e) {
             System.out.println(e);
         }

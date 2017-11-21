@@ -3,7 +3,7 @@ import com.jogamp.opengl.GL2;
 interface Konstanter {
     float grense = -2;
     float grenseHoyde = 3;
-    float hastighet = 0.1f;
+    float hastighet = 0.5f;
     float width = 1.5f;
     float height = 1;
 }

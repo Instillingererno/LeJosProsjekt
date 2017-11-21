@@ -27,6 +27,8 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     private final int[] furElise = {
             0,0,0,67,
             0,0,64,0,
+            0,0,72,0,
+            0,57,0,0,
             0,49,0,0,
             45,0,72,0,
             0,0,74,0,
@@ -38,14 +40,19 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             0,0,75,0,
             0,0,0,76,
             0,0,64,0,
+            0,57,0,0,
             0,52,0,0,
-            45,0,0,70,
+            45,0,71,0,
             0,0,0,69,
             0,0,67,0,
+            0,0,64,0,
+            0,68,0,0, // Andre opptur
             0,52,0,0,
-            36,0,0,0,
+            42,0,70,0,
             0,0,0,69,
             0,0,64,0,
+            0,0,60,0,
+            0,57,0,0,
             0,52,0,0,
             45,0,69,0,
             0,0,72,0,
@@ -58,7 +65,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             0,0,0,76
     };
     public static boolean[] innafor = {false,false,false,false};
-    public static int[] noter = {0,0,0,0};
+    public static Note[] noter = {null,null,null,null};
     private final long timeAtStart;
     private float time;
     private final double takt = 1;
@@ -67,10 +74,8 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             {0.7490f,0.2901f,0.2156f}, // Red
             {0.8588f,0.8784f,0.2784f}, // Yellow
             {0.2235f,0.5764f,0.8274f}, // Blue
-            {1f,1f,1f}
+            {0.3372f, 0.3372f, 0.3372f}
     };
-
-    private static server client;
 
     public static RealtimePlayer player = null;
 
@@ -80,6 +85,10 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     public static int score = 0;
 
     public static SpillObj[] spillObjs;
+
+    private static Socket MyClient;
+    private static DataInputStream in = null;
+    private static DataOutputStream out = null;
 
     private GLU glu;
     private static FPSAnimator anim;
@@ -125,7 +134,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         spillObjs = new SpillObj[antall];
         antall = 0;
         int teller = 1;
-        int avstandBunn = 400;
+        int avstandBunn = 600;
         float avstandMellom = 4f;
         for(int i = 0; i < furElise.length; i++) {
             switch (teller) {
@@ -182,12 +191,12 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         for(int i = spillObjs.length -1; i >= 0; i--) {
             if(spillObjs[i].check()) {
                 innafor[spillObjs[i].getLane()] = true;
-                noter[spillObjs[i].getLane()] = spillObjs[i].getNote();
+                noter[spillObjs[i].getLane()] = new Note(spillObjs[i].getNote());
                 spillObjs[i].color = COLORS[4];
             }
             else if(spillObjs[i].erUnderGrense()) {
                 innafor[spillObjs[i].getLane()] = false;
-                noter[spillObjs[i].getLane()] = 0;
+                noter[spillObjs[i].getLane()] = null;
             }
         }
 
@@ -258,18 +267,18 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public static void main(String[] args) {
-        boolean fortsett = false;
+        boolean fortsett = true;
         int teller = 0;
 
-        while (fortsett) {
-            teller++;
+        while(MyClient == null) {
             try {
-                client = new server();
+                System.out.println("Prøver tilkobling");
+                MyClient = new Socket("10.0.1.1", 1111);
+                System.out.println("Vellykket");
+                in = new DataInputStream(MyClient.getInputStream());
+                out = new DataOutputStream((MyClient.getOutputStream()));
             } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(teller == 1) {
-                fortsett = JOptionPane.showConfirmDialog(null, "Det blitt forsøkt å kontakte EV3 enheten, fortsett å kontakte EV3?", "JA for å fortsette, nei for å stoppe", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+                System.out.println(e);
             }
         }
 
@@ -288,26 +297,34 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         if(fortsett) {
             try {
                 while(true) {
-                    switch (client.getInt()) {
+                    switch (in.readInt()) {
                         case 1:
                             score += (innafor[0]) ? 10 : -10;
+                            if(noter[0] != null) player.startNote(noter[0]);
                             break;
                         case 2:
+                            if(noter[0] != null) player.stopNote(noter[0]);
                             break;
                         case 3:
                             score += (innafor[1]) ? 10 : -10;
+                            if(noter[1] != null) player.startNote(noter[1]);
                             break;
                         case 4:
+                            if(noter[1] != null) player.stopNote(noter[1]);
                             break;
                         case 5:
                             score += (innafor[2]) ? 10 : -10;
+                            if(noter[2] != null) player.startNote(noter[2]);
                             break;
                         case 6:
+                            if(noter[2] != null) player.stopNote(noter[2]);
                             break;
                         case 7:
                             score += (innafor[3]) ? 10 : -10;
+                            if(noter[3] != null) player.startNote(noter[3]);
                             break;
                         case 8:
+                            if(noter[3] != null) player.stopNote(noter[3]);
                             break;
                     }
                 }
@@ -317,52 +334,63 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         }
     }
 }
-class server {
-    Socket MyClient;
-    DataInputStream in = null;
-    DataOutputStream out = null;
-
-    public server() throws IOException {
-        try {
-            System.out.println("Prøver tilkobling");
-            MyClient = new Socket("10.0.1.1", 1111);
-            System.out.println("Vellykket");
-            in = new DataInputStream(MyClient.getInputStream());
-            out = new DataOutputStream((MyClient.getOutputStream()));
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-    }
-    public int getInt() throws IOException {
-        return in.readInt();
-    }
-}
 
 class keyWait implements KeyListener {
-    boolean keyLiftet = true;
+    boolean[] keyLiftet = {true,true,true,true};
     @Override
     public void keyTyped(KeyEvent e) { }
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()-48) {
             case 1:
-                PianoHero.score += (PianoHero.innafor[0]) ? 10 : -10;
-                if(PianoHero.noter[0] != 0) PianoHero.player.play(new Note(PianoHero.noter[0]));
+                if(keyLiftet[0]) {
+                    PianoHero.score += (PianoHero.innafor[0]) ? 10 : -10;
+                    if(PianoHero.noter[0] != null) PianoHero.player.startNote(PianoHero.noter[0]);
+                    keyLiftet[0] = false;
+                }
                 break;
             case 2:
-                PianoHero.score += (PianoHero.innafor[1]) ? 10 : -10;
-                if(PianoHero.noter[1] != 0) PianoHero.player.play(new Note(PianoHero.noter[1]));
+                if(keyLiftet[1]) {
+                    PianoHero.score += (PianoHero.innafor[1]) ? 10 : -10;
+                    if(PianoHero.noter[1] != null) PianoHero.player.startNote(PianoHero.noter[1]);
+                    keyLiftet[1] = false;
+                }
                 break;
             case 3:
-                PianoHero.score += (PianoHero.innafor[2]) ? 10 : -10;
-                if(PianoHero.noter[2] != 0) PianoHero.player.play(new Note(PianoHero.noter[2]));
+                if(keyLiftet[2]) {
+                    PianoHero.score += (PianoHero.innafor[2]) ? 10 : -10;
+                    if(PianoHero.noter[2] != null) PianoHero.player.startNote(PianoHero.noter[2]);
+                    keyLiftet[2] = false;
+                }
                 break;
             case 4:
-                PianoHero.score += (PianoHero.innafor[3]) ? 10 : -10;
-                if(PianoHero.noter[3] != 0) PianoHero.player.play(new Note(PianoHero.noter[3]));
+                if(keyLiftet[3]) {
+                    PianoHero.score += (PianoHero.innafor[3]) ? 10 : -10;
+                    if(PianoHero.noter[3] != null) PianoHero.player.startNote(PianoHero.noter[3]);
+                    keyLiftet[3] = false;
+                }
                 break;
         }
     }
     @Override
-    public void keyReleased(KeyEvent e) { }
+    public void keyReleased(KeyEvent e) {
+        switch (e.getKeyCode()-48) {
+            case 1:
+                keyLiftet[0] = true;
+                if(PianoHero.noter[0] != null) PianoHero.player.stopNote(PianoHero.noter[0]);
+                break;
+            case 2:
+                keyLiftet[1] = true;
+                if(PianoHero.noter[1] != null) PianoHero.player.stopNote(PianoHero.noter[1]);
+                break;
+            case 3:
+                keyLiftet[2] = true;
+                if(PianoHero.noter[2] != null) PianoHero.player.stopNote(PianoHero.noter[2]);
+                break;
+            case 4:
+                keyLiftet[3] = true;
+                if(PianoHero.noter[3] != null) PianoHero.player.stopNote(PianoHero.noter[3]);
+                break;
+        }
+    }
 }
