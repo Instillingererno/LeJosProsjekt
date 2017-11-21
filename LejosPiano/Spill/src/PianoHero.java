@@ -129,6 +129,9 @@ public class PianoHero extends GLCanvas implements GLEventListener {
                                     new SpillObj(gl, 2, 6,COLORS[2]),
                                     new SpillObj(gl, 5.5f, 6, COLORS[3])};*/
 
+        player.play("E5 D#5 E5 D#5 E5 B4 D5 C5 A4 A3 C4 E4 A4 B4 E3 E4 C5 B4 A4 A3");
+
+
         int antall = 0;
         for(int i : furElise) antall += (i != 0) ? 1 : 0;
         spillObjs = new SpillObj[antall];
