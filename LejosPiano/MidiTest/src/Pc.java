@@ -12,8 +12,10 @@ public class Pc {
         Socket MyClient = null;
         DataInputStream in = null;
         DataOutputStream out = null;
-        Chord[] chords = {new Chord("E"), new Chord("B"), new Chord("C"), new Chord("A")};
+        Chord[] chords = {new Chord("Gmaj"), new Chord("Dmaj"), new Chord("Emin"), new Chord("Cmaj")}; //G  D E C
         RealtimePlayer player = new RealtimePlayer();
+
+        //player.changeInstrument(125);
 
         while(MyClient == null) {
             try {
@@ -33,24 +35,28 @@ public class Pc {
             //playsound
             switch (input) {
                 case 1:
+                    //player.changeInstrument(109);
                     player.startChord(chords[0]);
                     break;
                 case 2:
                     player.stopChord(chords[0]);
                     break;
                 case 3:
+                    //player.changeInstrument(126);
                     player.startChord(chords[1]);
                     break;
                 case 4:
                     player.stopChord(chords[1]);
                     break;
                 case 5:
+                    //player.changeInstrument(99);
                     player.startChord(chords[2]);
                     break;
                 case 6:
                     player.stopChord(chords[2]);
                     break;
                 case 7:
+                    //player.changeInstrument(125);
                     player.startChord(chords[3]);
                     break;
                 case 8:
