@@ -67,7 +67,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             {0.7490f,0.2901f,0.2156f}, // Red
             {0.8588f,0.8784f,0.2784f}, // Yellow
             {0.2235f,0.5764f,0.8274f}, // Blue
-            {}
+            {1f,1f,1f}
     };
 
     private static server client;
@@ -125,8 +125,8 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         spillObjs = new SpillObj[antall];
         antall = 0;
         int teller = 1;
-        int avstandBunn = 200;
-        float avstandMellom = 1.5f;
+        int avstandBunn = 400;
+        float avstandMellom = 4f;
         for(int i = 0; i < furElise.length; i++) {
             switch (teller) {
                 case 1:
@@ -183,6 +183,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
             if(spillObjs[i].check()) {
                 innafor[spillObjs[i].getLane()] = true;
                 noter[spillObjs[i].getLane()] = spillObjs[i].getNote();
+                spillObjs[i].color = COLORS[4];
             }
             else if(spillObjs[i].erUnderGrense()) {
                 innafor[spillObjs[i].getLane()] = false;

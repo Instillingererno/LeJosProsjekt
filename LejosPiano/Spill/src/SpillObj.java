@@ -2,8 +2,8 @@ import com.jogamp.opengl.GL2;
 
 interface Konstanter {
     float grense = -2;
-    float grenseHoyde = 20;
-    float hastighet = 0.2f;
+    float grenseHoyde = 3;
+    float hastighet = 0.1f;
     float width = 1.5f;
     float height = 1;
 }
@@ -11,7 +11,7 @@ interface Konstanter {
 public class SpillObj implements Konstanter {
     private GL2 gl;
     private float x,y;
-    private float[] color;
+    public float[] color;
     private final int note;
     private final int lane;
 
