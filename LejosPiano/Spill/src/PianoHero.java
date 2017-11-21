@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import static javax.swing.JOptionPane.*;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
@@ -102,7 +103,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public void init(GLAutoDrawable drawable) {
-
+        int stoff = showConfirmDialog(null, "Continue?", "Continue?", JOptionPane.YES_NO_OPTION);
 
         try {
             player = new RealtimePlayer();
