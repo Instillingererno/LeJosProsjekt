@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="JFugue">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../JavaDependencies/JFugue" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../JavaDependencies/JFugue" recursive="false" />
+  </library>
+</component>

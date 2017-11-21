@@ -10,6 +10,6 @@
     <orderEntry type="library" name="Open GL" level="project" />
     <orderEntry type="library" name="jogamp-windows" level="application" />
     <orderEntry type="library" name="leJOS EV3" level="application" />
-    <orderEntry type="library" name="JFugue" level="application" />
+    <orderEntry type="library" name="JFugue" level="project" />
   </component>
 </module>
