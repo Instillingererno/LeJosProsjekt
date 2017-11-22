@@ -1,4 +1,3 @@
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import javax.swing.*;
 import java.awt.*;
@@ -7,10 +6,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import static javax.swing.JOptionPane.*;
 
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.glu.GLU;
@@ -19,8 +16,7 @@ import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 import com.jogamp.opengl.util.awt.TextRenderer;
-import org.jfugue.midi.MidiFileManager;
-import org.jfugue.pattern.Pattern;
+
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
 
@@ -228,11 +224,11 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         for(SpillObj i : spillObjs) i.update();
 
 
-        gl.glPointSize(10000);
+        /*gl.glPointSize(10000);
         gl.glColor3f(0f,0f,0f);
         gl.glBegin(GL2.GL_POINTS);
         gl.glVertex3f(0,1,-2);
-        gl.glEnd();
+        gl.glEnd();*/
 
         // "Flyplass" eller det området der akkordene skal være når man trykker
         gl.glColor3f(0.36f, 1f, 0.36f);
@@ -259,7 +255,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
 
         renderer.beginRendering(drawable.getSurfaceWidth(), drawable.getSurfaceHeight());
         renderer.setColor(1.0f, 1.0f, 0.0f, 1.0f);
-        renderer.draw("Score: " + score + " Y: " + spillObjs[0].getY(), 20, 650);
+        renderer.draw("Score: " + score, 20, 650);
         renderer.endRendering();
     }
 

@@ -84,7 +84,7 @@ public class LejosPiano {
     }
     public static void vent() {
         try{
-            TimeUnit.MILLISECONDS.sleep(2);
+            TimeUnit.MILLISECONDS.sleep(4);
         } catch(Exception e) {
             System.out.println(e);
         }

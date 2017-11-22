@@ -3,7 +3,7 @@ import com.jogamp.opengl.GL2;
 interface Konstanter {
     float grense = -2;
     float grenseHoyde = 3;
-    float hastighet = 0.5f;
+    float hastighet = 0.6f;
     float width = 1.5f;
     float height = 1;
 }
@@ -30,9 +30,9 @@ public class SpillObj implements Konstanter {
     private void draw() {
         gl.glColor3f(0f,0f,0f);
         gl.glPointSize(20);
-        gl.glBegin(GL2.GL_POINTS);
+        /*gl.glBegin(GL2.GL_POINTS);
         gl.glVertex3f(0,-5,0);
-        gl.glEnd();
+        gl.glEnd();*/
         gl.glPushMatrix();
         gl.glTranslatef(x, y, 0f);
         gl.glColor3f(0f,0f,0f);
