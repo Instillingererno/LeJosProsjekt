@@ -25,46 +25,60 @@ import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
 
 public class PianoHero extends GLCanvas implements GLEventListener {
-    private final int[] furElise = {
-            0,0,0,67,
-            0,0,64,0,
-            0,0,72,0,
-            0,57,0,0,
-            0,49,0,0,
-            45,0,72,0,
-            0,0,74,0,
-            0,0,0,75,
-            0,0,73,0,
-            0,0,0,76,
-            0,0,75,0,
-            0,0,0,76,
-            0,0,75,0,
-            0,0,0,76,
-            0,0,64,0,
-            0,57,0,0,
-            0,52,0,0,
-            45,0,71,0,
-            0,0,0,69,
-            0,0,67,0,
-            0,0,64,0,
-            0,68,0,0, // Andre opptur
-            0,52,0,0,
-            42,0,70,0,
-            0,0,0,69,
-            0,0,64,0,
-            0,0,60,0,
-            0,57,0,0,
-            0,52,0,0,
-            45,0,69,0,
-            0,0,72,0,
-            0,0,0,74,
-            0,0,70,0,
-            0,0,0,76,
-            0,0,75,0,
-            0,0,0,76,
-            0,0,75,0,
-            0,0,0,76
+    private final String[] furElise = {
+            "0","0","E3","0",
+            "0","B4","0","0",
+            "0","0","0","C5",
+            "0","0","D5","0",
+            "0","0","0","E4",
+            "0","0","A3","0",
+            "C5","0","0","0",
+            "0","0","D5","0",
+            "0","0","0","E5",
+            "0","0","0","F4",
+            "0","0","0","G3",
+            "0","0","D5","0",
+            "0","0","0","E5",
+            "0","0","F5","0",
+            "0","0","G4","0",
+            "0","C3","0","0",
+            "0","E5","0","0",
+            "D5","0","0","0",
+            "0","0","C5","0",
+            "0","0","0","B4",
+            "0","0","A3","0",
+            "0","0","0","A4",
+            "0","0","B4","0",
+            "0","0","0","C5",
+            "0","0","E4","0",
+            "0","0","0","E3",
+            "0","0","B4","0",
+            "0","A4","0","0",
+            "0","E4","0","0",
+            "C4","0","0","0",
+            "0","0","0","A3",
+            "0","0","C5","0",
+            "0","0","B4","0",
+            "0","G#4","0","0", // Andre opptur
+            "0","E4","0","0",
+            "0","0","E3","0",
+            "0","0","0","B4",
+            "0","0","A4","0",
+            "0","0","E4","0",
+            "0","C4","0","0",
+            "0","A3","0","0",
+            "0","0","A4","0",
+            "0","0","C5","0",
+            "0","0","0","D5",
+            "0","0","B4","0",
+            "0","0","0","E5",
+            "0","0","D#5","0",
+            "0","0","0","E5",
+            "0","0","D#5","0",
+            "0","0","0","E5"
+
     };
+
     public static boolean[] innafor = {false,false,false,false};
     public static Note[] noter = {null,null,null,null};
     private final long timeAtStart;
@@ -103,7 +117,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public void init(GLAutoDrawable drawable) {
-        int stoff = showConfirmDialog(null, "Continue?", "Continue?", JOptionPane.YES_NO_OPTION);
+        //int stoff = showConfirmDialog(null, "Continue?", "Continue?", JOptionPane.YES_NO_OPTION);
 
         try {
             player = new RealtimePlayer();
@@ -130,41 +144,40 @@ public class PianoHero extends GLCanvas implements GLEventListener {
                                     new SpillObj(gl, 2, 6,COLORS[2]),
                                     new SpillObj(gl, 5.5f, 6, COLORS[3])};*/
 
-        player.play("E5 D#5 E5 D#5 E5 B4 D5 C5 A4 A3 C4 E4 A4 B4 E3 E4 C5 B4 A4 A3");
 
 
         int antall = 0;
-        for(int i : furElise) antall += (i != 0) ? 1 : 0;
+        for(String i : furElise) antall += (i != "0") ? 1 : 0;
         spillObjs = new SpillObj[antall];
         antall = 0;
         int teller = 1;
-        int avstandBunn = 600;
+        int avstandBunn = 800;
         float avstandMellom = 4f;
         for(int i = 0; i < furElise.length; i++) {
             switch (teller) {
                 case 1:
-                    if(furElise[i] != 0) {
+                    if(furElise[i] != "0") {
                         spillObjs[antall] = new SpillObj(gl, -5,avstandBunn + avstandMellom*spillObjs.length - i*avstandMellom, COLORS[0], furElise[i], 0);
                         antall++;
                     }
                     teller++;
                     break;
                 case 2:
-                    if(furElise[i] != 0) {
+                    if(furElise[i] != "0") {
                         spillObjs[antall] = new SpillObj(gl, -1.5f,avstandBunn + avstandMellom*spillObjs.length - i*avstandMellom + avstandMellom, COLORS[1], furElise[i], 1);
                         antall++;
                     }
                     teller++;
                     break;
                 case 3:
-                    if(furElise[i] != 0) {
+                    if(furElise[i] != "0") {
                         spillObjs[antall] = new SpillObj(gl, 2,avstandBunn + avstandMellom*spillObjs.length - i*avstandMellom + avstandMellom*2, COLORS[2], furElise[i], 2);
                         antall++;
                     }
                     teller++;
                     break;
                 case 4:
-                    if(furElise[i] != 0) {
+                    if(furElise[i] != "0") {
                         spillObjs[antall] = new SpillObj(gl, 5.5f,avstandBunn + avstandMellom*spillObjs.length - i*avstandMellom + avstandMellom*3, COLORS[3], furElise[i], 3);
                         antall++;
                     }

@@ -12,10 +12,10 @@ public class SpillObj implements Konstanter {
     private GL2 gl;
     private float x,y;
     public float[] color;
-    private final int note;
+    private final String note;
     private final int lane;
 
-    public SpillObj(GL2 gl, float x, float y, float[] color, int note, int lane) {
+    public SpillObj(GL2 gl, float x, float y, float[] color, String note, int lane) {
         this.gl = gl;
         this.x = x;
         this.y = y;
@@ -56,7 +56,7 @@ public class SpillObj implements Konstanter {
     public boolean erUnderGrense() {
         return y < grense - grenseHoyde;
     }
-    public int getNote() {
+    public String getNote() {
         return note;
     }
     public float getY() {
