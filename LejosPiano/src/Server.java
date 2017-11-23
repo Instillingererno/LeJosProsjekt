@@ -16,11 +16,6 @@ public class Server {
     private EV3 ev3 = (EV3) BrickFinder.getLocal();
     private TextLCD lcd = ev3.getTextLCD();
 
-    public Server() {}
-    public boolean isConnected() {
-        lcd.drawString(Boolean.toString(s.isConnected()),0,5);
-        return s.isConnected();
-    }
     public void accept() throws IOException {
         LCD.clear();
         lcd.drawString("Venter på tilkobling", 0, 1);
@@ -36,13 +31,5 @@ public class Server {
         } catch(Exception e) {
             lcd.drawString(e.toString(), 0, 1);
         }
-    }
-    public void send(String input) {
-        try{
-            this.out.writeUTF(input);
-        } catch(Exception e) {
-            System.out.println(e);
-        }
-
     }
 }
