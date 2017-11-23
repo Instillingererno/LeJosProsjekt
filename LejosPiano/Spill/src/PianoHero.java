@@ -20,6 +20,10 @@ import com.jogamp.opengl.util.awt.TextRenderer;
 import org.jfugue.realtime.RealtimePlayer;
 import org.jfugue.theory.Note;
 
+/*
+    Klassen som styrer spillet PianoHero, inneholder alt som trengs for JOGL og det som trengs for å lage
+    spill objekter på de rette plassene
+ */
 public class PianoHero extends GLCanvas implements GLEventListener {
     private final String[] furElise = {
             "0","0","E3","0",
@@ -327,6 +331,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 }
 
+// Klasse for å kunne bruke nummer tastene 1-4 på tastaturet. 
 class keyWait implements KeyListener {
     boolean[] keyLiftet = {true,true,true,true};
     @Override
