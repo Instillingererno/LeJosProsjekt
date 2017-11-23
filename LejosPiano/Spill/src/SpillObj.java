@@ -59,9 +59,6 @@ public class SpillObj implements Konstanter {
     public String getNote() {
         return note;
     }
-    public float getY() {
-        return y;
-    }
     public int getLane() {
         return lane;
     }

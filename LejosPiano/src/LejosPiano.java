@@ -11,30 +11,42 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+// Enum til bruk å skille mellom NXT trykksensorer og EV3 trykksensorer
 enum Type {
     NXT, EV3
 }
 
+// Hovedklassen som kjører på EV3-en, håndterer bruk av TrykkSensor og Server klassen
 public class LejosPiano {
     public static void main(String[] args) throws IOException {
+
+        // Init til å kunne skrive til EV3-skjermen
         EV3 ev3 = (EV3) BrickFinder.getLocal();
         TextLCD LCD = ev3.getTextLCD();
 
+        // Init av trykksensorene
         TrykkSensor s1 = new TrykkSensor(Type.EV3, SensorPort.S1);
         TrykkSensor s2 = new TrykkSensor(Type.NXT, SensorPort.S2);
         TrykkSensor s3 = new TrykkSensor(Type.NXT, SensorPort.S3);
         TrykkSensor s4 = new TrykkSensor(Type.NXT, SensorPort.S4);
 
-        //Button.UP.addButtonListener();
-
+        // Init av server
         Server host = new Server();
+        // connect() lytter etter pc-en
         host.connect();
         while(!Button.ESCAPE.isDown()) {
             LCD.clear();
             while(!Button.ESCAPE.isDown()) {
-                vent();
+                vent(); // vent() legger inn en 4 ms delay mellom hver gang trykksensorene sjekkes
+                        // dette gjøres fordi trykksensorene kan gi et vekslene signal om de er trykket mens de blir trykket ned
                 try {
-                    //PRESSED
+                    /*
+                        EV3-en sender en int mellom 1 og 8 til pc-en der oddetallene er når en trykksensor er blitt trykket ned
+                        og partallene er når trykksensorene har blitt løftet etter å ha vært trykket.
+                        Det lar oss ha sustain i akkorder eller noter som spilles.
+                     */
+
+                    // Sjekker hver av trykksensorene om de er trykket
                     if(s1.isPressed()) {
                         host.out.writeInt(1);
                         LCD.clear(1);
@@ -56,7 +68,7 @@ public class LejosPiano {
                         LCD.drawString("S4: Pressed" + "  " + s4.getSample(),0,4);
                     }
 
-                    //RELEASED
+                    // Sjekker om hver av trykksensorene har blitt løftet opp fra å være trykket ned
                     if(s1.isReleased()) {
                         host.out.writeInt(2);
                         LCD.drawString("S1: Released" + " " + s1.getSample(),0,1);
@@ -74,6 +86,11 @@ public class LejosPiano {
                         LCD.drawString("S4: Released" + " " + s4.getSample(),0,4);
                     }
                 } catch(Exception e) {
+                    /*
+                        Tidligere så prøvde vi å sjekke isConnected() på Socket men den ga true selv om PC-en ikke hadde
+                        programmet kjørende, derfor håndterer heller EV3-en unntaket som blir kastet når den prøver å
+                        sende data til PC-en og PC-en ikke kan ta imot.
+                     */
                     LCD.clear();
                     LCD.drawString("Tilkobling mistet",0,1);
                     LCD.drawString("Prøver på ny",0,2);
@@ -82,7 +99,8 @@ public class LejosPiano {
             }
         }
     }
-    public static void vent() {
+    // Metode som holder programmet i 4 ms.
+    private static void vent() {
         try{
             TimeUnit.MILLISECONDS.sleep(4);
         } catch(Exception e) {
@@ -91,6 +109,10 @@ public class LejosPiano {
     }
 }
 
+/*
+    Klasse som håndterer init'en til trykksensorene
+    og har metoder for å sjekke om sensoren har blitt trykket og løftet.
+ */
 class TrykkSensor {
     private Port port;
     private Type type;
@@ -132,5 +154,5 @@ class TrykkSensor {
     }
     public String getSample() {
         return Arrays.toString(sample);
-    }
+    } // Brukes for å skrive ut sensor verdien til
 }
