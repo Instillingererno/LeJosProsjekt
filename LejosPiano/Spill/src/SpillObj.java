@@ -8,6 +8,7 @@ interface Konstanter {
     float height = 1;
 }
 
+// Klasse som håndterer posisjon og utregninger til brikkene spilleren skal
 public class SpillObj implements Konstanter {
     private GL2 gl;
     private float x,y;

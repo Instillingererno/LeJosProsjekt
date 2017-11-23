@@ -8,6 +8,9 @@ import lejos.hardware.ev3.EV3;
 import lejos.hardware.lcd.LCD;
 import lejos.hardware.lcd.TextLCD;
 
+/*
+    Klasse som håndterer init og bruk av ServerSocket og Socket
+ */
 public class Server {
     private ServerSocket serv = null;
     private Socket s = null;

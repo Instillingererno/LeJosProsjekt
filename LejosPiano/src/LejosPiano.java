@@ -152,7 +152,7 @@ class TrykkSensor {
         }
         return false;
     }
-    public String getSample() {
+    public String getSample() { // Brukes for å skrive ut sensor verdien til EV3-skjermen
         return Arrays.toString(sample);
-    } // Brukes for å skrive ut sensor verdien til
+    }
 }

@@ -77,9 +77,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
 
     public static boolean[] innafor = {false,false,false,false};
     public static Note[] noter = {null,null,null,null};
-    private final long timeAtStart;
-    private float time;
-    private final double takt = 1;
     private final float[][] COLORS = {
             {0.2156f,0.7490f,0.5607f}, // Green
             {0.7490f,0.2901f,0.2156f}, // Red
@@ -109,23 +106,15 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     public PianoHero() {
         this.addGLEventListener(this);
         this.addKeyListener(new keyWait());
-        timeAtStart = System.currentTimeMillis();
     }
 
     public void init(GLAutoDrawable drawable) {
-        //int stoff = showConfirmDialog(null, "Continue?", "Continue?", JOptionPane.YES_NO_OPTION);
 
         try {
             player = new RealtimePlayer();
-            //final Pattern pattern = MidiFileManager.loadPatternFromMidi(new File("Spill/src/beethoven.mid"));
-            //player.play(pattern);
         } catch(MidiUnavailableException e) {
             e.printStackTrace();
-        } /*catch(InvalidMidiDataException e) {
-            e.printStackTrace();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }*/
+        }
 
         gl = drawable.getGL().getGL2();
         glu = new GLU();
@@ -134,13 +123,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
         gl.glHint(GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST);
         gl.glShadeModel(GL2.GL_SMOOTH);
         renderer = new TextRenderer(new Font("Sans Serif", Font.BOLD, 36));
-
-        /*spillObjs = new SpillObj[] {new SpillObj(gl, -5, 6, COLORS[0]),
-                                    new SpillObj(gl, -1.5f, 6, COLORS[1]),
-                                    new SpillObj(gl, 2, 6,COLORS[2]),
-                                    new SpillObj(gl, 5.5f, 6, COLORS[3])};*/
-
-
 
         int antall = 0;
         for(String i : furElise) antall += (i != "0") ? 1 : 0;
@@ -197,8 +179,6 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public void display(GLAutoDrawable drawable) {
-        time = (time = System.currentTimeMillis() - timeAtStart) / 1000;
-
 
         //Sjekk hitboxes og noter
         for(int i = spillObjs.length -1; i >= 0; i--) {
@@ -281,9 +261,8 @@ public class PianoHero extends GLCanvas implements GLEventListener {
 
     public static void main(String[] args) {
         boolean fortsett = true;
-        int teller = 0;
 
-        while(MyClient == null) {
+        while(MyClient == null && fortsett) {
             try {
                 System.out.println("Prøver tilkobling");
                 MyClient = new Socket("10.0.1.1", 1111);
