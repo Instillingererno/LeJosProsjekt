@@ -264,7 +264,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 
     public static void main(String[] args) {
-        boolean fortsett = true;
+        boolean fortsett = false;
 
         while(MyClient == null && fortsett) {
             try {
@@ -331,7 +331,7 @@ public class PianoHero extends GLCanvas implements GLEventListener {
     }
 }
 
-// Klasse for å kunne bruke nummer tastene 1-4 på tastaturet. 
+// Klasse for å kunne bruke nummer tastene 1-4 på tastaturet.
 class keyWait implements KeyListener {
     boolean[] keyLiftet = {true,true,true,true};
     @Override
